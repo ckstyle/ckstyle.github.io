@@ -17399,18 +17399,18 @@ seajs.use('ckstyle/run-ckservice', function(runner) {
         <div style="width: 600px; margin: 0 auto; background-color: #F2F2F2; margin-top: 140px; color: #666; text-align: left; padding: 10px;border-radius: 4px;">\
             <h2 style="font-size: 26px; margin-top: 10px; margin-bottom: 20px;">感谢您使用CKService</h2>\
             <p style="font-size: 14px;">我们检测到服务主机： <a href="' + host + '" target="_blank">' + host + '</a> 上的服务并没有启动。</p>\
-            <p style="font-size: 14px;>您通过以下简单2步，即可让CKService在你的机器上运行起来。</p>\
+            <p style="font-size: 14px;">您通过以下简单2步，即可让CKService在你的机器上运行起来。</p>\
             <ol style="list-style: none;">\
                 <li style="padding: 6px;"> 1. [sudo] npm install -g ckstyle</li>\
                 <li style="padding: 6px;"> 2. ckstyle serve</li>\
             </ol>\
-            <p style="font-size: 14px;>您也可以指定 window.CK_CONFIG.host 属性，指定CKService服务主机</p>\
+            <p style="font-size: 14px;">您也可以指定 window.CK_CONFIG.host 属性，指定CKService服务主机</p>\
         </div>\
         <div onclick="$(this).parent().remove()" style="z-index: 2147483647;position: absolute; right: 0; top: 0; font-size: 44px; color: #FFF; cursor: pointer;">&times;</div>\
     </div>'
 
     function detect(callback) {
-        $.get(host + '/ck_detect')
+        $.get(host + '/ck_de2tect')
          .done(callback)
          .error(function() {
             $('.ck-detect-error-wrapper').remove();
