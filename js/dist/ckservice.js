@@ -17410,7 +17410,7 @@ seajs.use('ckstyle/run-ckservice', function(runner) {
     </div>'
 
     function detect(callback) {
-        $.get(host + '/ck_de2tect')
+        $.get(host + '/ck_detect')
          .done(callback)
          .error(function() {
             $('.ck-detect-error-wrapper').remove();
