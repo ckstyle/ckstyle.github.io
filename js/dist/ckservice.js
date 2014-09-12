@@ -17410,9 +17410,16 @@ seajs.use('ckstyle/run-ckservice', function(runner) {
     </div>'
 
     function detect(callback) {
-        $.get(host + '/ck_detect')
-         .done(callback)
-         .error(function() {
+        $.ajax({
+            type: 'get',
+            url: host + '/ck_detect',
+            dataType: 'jsonp'
+        })
+         .done(function(res) {
+            callback();
+         })
+         .error(function(e) {
+            console.log(e)
             $('.ckservice-loading').remove();
             $('.ck-detect-error-wrapper').remove();
             $(wrapper).appendTo('body')
