@@ -1,7 +1,7 @@
-define(function() {
+!(function() {
 	$('<style type="text/css">\
-	.version-tip-top {border-bottom:2px solid #ccc;padding:10px 10px 10px 0;}\
-	.version-tip-bottom {border-top:2px solid #ccc;padding:10px 10px 0 0;margin-top:10px;}\
+	.version-tip-top {border-bottom:1px solid #eee;padding:10px 10px 20px 0;}\
+	.version-tip-bottom {border-top:1px solid #eee;padding:10px 10px 0 0;margin-top:10px;}\
 </style>\
 <div class="modal hide fade" id="too-old-version" style="_position:absolute;">\
   <div class="modal-body">\
@@ -13,10 +13,9 @@ define(function() {
 		<a href="http://www.opera.com/download/"><img src="img/opera.png"/></a>\
 		<a href="http://windows.microsoft.com/zh-cn/internet-explorer/downloads/ie-10/worldwide-languages"><img src="img/IE10.jpg"/></a>\
     </div>\
-    <p class="version-tip-bottom">同时也欢迎您访问<a href="http://noie6.renren.com" target="_blank">http://noie6.renren.com</a> 参与人人前端的呼吁~</p>\
   </div>\
   <div class="modal-footer">\
-    <a href="#" class="btn btn-link" data-dismiss="modal">关闭</a>\
+    <a href="javascript:void(0)" class="btn btn-link" data-dismiss="modal">关闭</a>\
     <a href="http://www.google.cn/intl/zh-CN/chrome/browser/" class="btn btn-primary">下载Google Chrome</a>\
   </div>\
 </div>\
@@ -25,4 +24,4 @@ define(function() {
 		$("#too-old-version").modal("show");\
 	})\
 </script>').appendTo('body');
-});
+})();
