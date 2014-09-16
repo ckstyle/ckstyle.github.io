@@ -1,0 +1,15 @@
+{
+  "name": "ckstyle-homepage",
+  "version": "1.1.1",
+  "author": "wangjeaf <wangjeaf@gmail.com>",
+  "homepage": "http://ckstyle.github.io",
+  "contributors": [
+  ],
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "~0.2.2",
+    "load-grunt-tasks": "^0.6.0"
+  }
+}
