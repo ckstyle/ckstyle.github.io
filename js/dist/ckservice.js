@@ -17306,7 +17306,10 @@ define('ckstyle/run-ckservice', function(require, exports, module) {
             var code = content.code || content;
 
             var before = code.length;
-            var compressed = service.doCompress(code);
+            var compressed = ''
+            if (code) {
+                compressed = service.doCompress(code);
+            }
             var after = compressed.length;
             var delta = before - after;
 
