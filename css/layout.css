@@ -397,6 +397,7 @@ h3 {
 
 #document li {
     margin: 8px;
+    padding: 0;
 }
 
 #document ul a {
