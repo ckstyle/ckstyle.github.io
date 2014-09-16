@@ -2,11 +2,12 @@ html,
 body {
     width: 100%;
     height: 100%;
-    background-color: #DDD;
+    background: #DFDFDF url('../img/bg_repeat.png') repeat left top;
+    color: #686868;
 }
 
 body {
-    width: 900px;
+    width: 980px;
     margin: 0 auto;
 }
 
@@ -170,14 +171,18 @@ body {
 }
 
 .menu li a {
-    padding: 8px 6px;
+    padding: 8px 0;
     color: #888;
+    border-bottom: 3px solid transparent;
+    text-decoration: none;
+    margin-left: 10px;
+    margin-right: 10px;
+    letter-spacing: 1px;
+    -webkit-transition: all .3s;
 }
 
 .menu .current {
-    background-color: #EEE;
-    border-radius: 5px;
-    box-shadow: 1px 1px 3px rgba(0,0,0,.3);
+    border-bottom-color: #DF482B;
 }
 
 .block {
@@ -224,13 +229,16 @@ body {
 
 .options li {
     float: left;
-    width: 220px;
+    width: 240px;
     margin: 2px;
     background-color: #EEE;
     border-radius: 5px;
     box-shadow: 1px 1px 1px rgba(0,0,0,.2);
 }
 
+.options li {
+    padding: 0;
+}
 .options .option-error {
     color: #BD362F;
 }
@@ -307,11 +315,15 @@ body {
 
 .result {
     margin-bottom: 20px;
-    padding: 5px;
-    background-color: #EEE;
+    padding: 10px 20px;
+    background-color: #FFF;
     font-family: 'Microsoft Yahei',tahoma,serif;
-    border-radius: 5px;
-    box-shadow: 0 0 22px rgba(0,0,0,.3);
+    border-top: 2px solid #20B7D4;
+    padding-top: 7px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), -1px 0 0 rgba(0, 0, 0, 0.03), 1px 0 0 rgba(0, 0, 0, 0.03), 0 1px 0 rgba(0, 0, 0, 0.12);
+}
+
+.result.normal {
 }
 
 .result .title {
@@ -389,10 +401,20 @@ h3 {
 
 #document ul a {
     display: inline-block;
-    width: 240px;
+    width: 275px;
     padding: 10px;
     background-color: #20B7D4;
     color: white;
-    border-radius: 5px;
-    box-shadow: 2px 2px 4px rgba(0,0,0,.3);
+    box-shadow: 2px 2px 4px rgba(0,0,0,.2);
+    -webkit-transition: all .4s;
+    transition: all .4s;
+    text-decoration: none;
+}
+
+#document ul a:hover {
+    text-indent: 1em;
+}
+
+ol li, ul li {
+    padding: 5px;
 }

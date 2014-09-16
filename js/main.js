@@ -21,7 +21,32 @@ $.hideErrorMsg = function() {
 	$('#error-msg-container').modal('hide');
 };
 
-(function(global) {
+
+;;(function(global) {
+
+	var RULES = [];
+
+	define('ckstyle/init-home', function(require, exports, module) {
+	    var styler = require('./ckstyler');
+	    var CssChecker = styler.CssChecker;
+	    var checker = new CssChecker('.a {width:100px}')
+	    checker.prepare();
+	    for(var prop in window) {
+	    	if (prop.indexOf('FED') == 0) {
+	    		var instance = new window[prop];
+	    		RULES.push({
+	    			id: instance.id,
+	    			priority: instance.errorLevel,
+	    			summary: instance.__doc__.summary,
+	    			desc: instance.__doc__.desc,
+	    			checked: instance.errorLevel == 0 || instance.errorLevel == 1
+	    		})
+	    	}
+	    }
+	})
+
+	seajs.use('ckstyle/init-home', function(){})
+
 	var CKSTYLE_RULES = {
 		template:  
 		'{{#rules}}<li>\
@@ -68,6 +93,7 @@ $(function() {
 	var jqTextarea = $('#editor'),
 		textarea = jqTextarea[0], top,
 	Editor = CodeMirror.fromTextArea(textarea, {
+		mode: 'css',
 	    theme: 'default',
 	    lineNumbers: true,
 	    indentUnit: 4,
@@ -108,7 +134,7 @@ $(function() {
 
 
 	var templates = {
-		ckstyle: '{{#hasError}}<h4 class="text-error">{{totalError}} error{{#manyErrors}}s{{/manyErrors}}</h4>{{/hasError}}\
+		check: '{{#hasError}}<h4 class="text-error">{{totalError}} error{{#manyErrors}}s{{/manyErrors}}</h4>{{/hasError}}\
 			      {{#hasError}}<ol>{{/hasError}}\
 				  	  {{#errors}}<li class="text-error" data-pos="{{selector}}">{{errorMsg}}</li>{{/errors}}\
 				  {{#hasError}}</ol>{{/hasError}}\
@@ -122,28 +148,31 @@ $(function() {
 				  {{#hasLog}}<ol>{{/hasLog}}\
 				      {{#logs}}<li class="muted" data-pos="{{selector}}">{{errorMsg}}</li>{{/logs}}\
 				  {{#hasLog}}</ol>{{/hasLog}}',
-		ckstyle_noerror: '<p class="text-success">CKstyle没有找到问题，牛逼！</p>',
-		fixstyle: '<textarea class="compressed">{{fixed}}</textarea>',
-		csscompress: '<h4>CssCompress [节省空间: {{after}}/{{before}}=<span class="CK">{{rate}}</span>%]</h4>\
+		check_noerror: '<p class="text-success mt10">CKStyle没有找到问题，赞CSS！</p>',
+		fix: '<textarea class="compressed">{{fixed}}</textarea>',
+		compress: '<h4>compress <span style="font-size:14px;">[节省字符: {{after}}/{{before}}=<span class="CK">{{rate}}</span>%]</span></h4>\
 					  <textarea>{{compressed}}</textarea>',
-		yuicompressor: '<h4>by CKStyle<span class="stumb"></span>[节省空间: {{after1}}/{{before1}}=<span class="CK">{{rate1}}</span>%\
+		yui: '<h4>by CKStyle<span class="stumb"></span><span style="font-size:14px;">[节省字符: {{after1}}/{{before1}}=<span class="CK">{{rate1}}</span>%\
 						{{#greater}}，比YUICompressor多节省 <span class="CK">{{delta}}</span>%] <span class="ml10">;-)</span> {{/greater}}\
 						{{#equal}}，与YUICompressor<span class="ok">持平] :-o</span>{{/equal}}\
-						{{#worse}}，比YUICompressor<span class="muted">还低</span>] :-( ，<a href="https://github.com/wangjeaf/CSSCheckStyle/issues/new" target="_blank">报bug去</a>{{/worse}}\
+						{{#worse}}，比YUICompressor<span class="muted">还低</span>] :-( ，<a href="https://github.com/wangjeaf/CSSCheckStyle/issues/new" target="_blank">报bug去</a>{{/worse}}</span>\
 						</h4>\
 						<textarea>{{compressed}}</textarea>\
 						<hr style="margin:10px 0;">\
-					    <h4>by YUICompressor [节省空间: {{after2}}/{{before2}}=<span class="CK">{{rate2}}</span>%]</h4>\
+					    <h4>by YUICompressor <span style="font-size:14px;">[节省字符: {{after2}}/{{before2}}=<span class="CK">{{rate2}}</span>%]</span></h4>\
 					    <textarea>{{yuimin}}</textarea>\
 					    <hr style="margin:10px 0;">\
 					    <div id="highchart-container" style="width: 600px; height: 300px; margin: 0 auto;box-shadow: 1px 1px 2px #ccc;"></div>'
 	};
 
 	function improve(type, before, result) {
-		if (type == 'ckstyle') {
+		if (type == 'check') {
 			result = result.checkresult;
-			if (!result.errors && !result.warnings && !result.logs) {
-				type = 'ckstyle_noerror';
+			console.log(result);
+			if ((!result.errors || result.errors.length == 0) && 
+				(!result.warnings || result.warnings.length == 0) && 
+				(!result.logs || result.logs.length == 0)) {
+				type = 'check_noerror';
 			} else {
 				if (result.errors && result.errors.length != 0) {
 					result.hasError = true;
@@ -167,22 +196,22 @@ $(function() {
 					}
 				}
 			}
-		} else if (type == 'csscompress') {
+		} else if (type == 'compress') {
 			result.before = before.length;
 			result.after = before.length - result.compressed.length;
-			result.rate = (result.after / result.before * 100).toFixed(4);
-		} else if (type == 'yuicompressor') {
+			result.rate = (result.after / result.before * 100).toFixed(2);
+		} else if (type == 'yui') {
 			result.before1 = before.length;
 			result.before2 = before.length;
 			result.after1 = before.length - result.compressed.length;
 			result.after2 = before.length - result.yuimin.length;
-			result.rate1 = (result.after1 / result.before1 * 100).toFixed(4);
-			result.rate2 = (result.after2 / result.before2 * 100).toFixed(4);
-			result.delta = (result.rate1 - result.rate2).toFixed(4);
+			result.rate1 = (result.after1 / result.before1 * 100).toFixed(2);
+			result.rate2 = (result.after2 / result.before2 * 100).toFixed(2);
+			result.delta = (result.rate1 - result.rate2).toFixed(2);
 			result.greater = result.delta > 0;
 			result.equal = result.delta == 0;
 			result.worse = result.delta < 0;
-		} else if (type == 'fixstyle') {
+		} else if (type == 'fix') {
 			result.fixed = result.fixed.replace(/\\n/g, '\n');
 		}
 		return Mustache.to_html(templates[type], result);
@@ -212,9 +241,9 @@ $(function() {
 	            },
 	            xAxis: {
 	                categories: [
-	                    '压缩前',
+	                    'Raw',
 	                    'YUICompressor',
-	                    'CKstyle'
+	                    'CKStyle'
 	                ],
 	                labels: {
 	                    align: 'center',
@@ -259,10 +288,10 @@ $(function() {
 	    });
 	}
 
-	var prefix = document.location.href.toLowerCase().indexOf('fed.d.xiaonei.com') != -1 ? '/ckstyle' : '';
-	function handleResponse(e, opType) {
-		if (e.result.css) {
-			Editor.setValue(e.result.css);
+	// var prefix = document.location.href.toLowerCase().indexOf('fed.d.xiaonei.com') != -1 ? '/ckstyle' : '';
+	function handleResponse(result, opType) {
+		if (result.css) {
+			Editor.setValue(result.css);
 		}
 		var resultContainer = $('.' + opType + '-result');
 		if ($('.options-container').is(':visible')) {
@@ -275,33 +304,30 @@ $(function() {
 			//$('.browsers-trigger').trigger('click');
 		//}
 		$('.result-container .result').hide();
-		resultContainer.find('.content').html(improve(opType, $('#editor').val(), e.result)).end().show();
-		resultContainer.find('.download').attr('href', prefix + '/handler/' + e.result.download)
-		if (opType == 'ckstyle') {
+		resultContainer.find('.content').html(improve(opType, $('#editor').val(), result)).end().show();
+		if (opType == 'check') {
 			return;
 		}
 		var textareas = $('.' + opType + '-result').find('textarea');
-		var mirror1 = makeMirror(textareas[0], opType != 'fixstyle');
+		var mirror1 = makeMirror(textareas[0], opType == 'yui');
 
-		if (opType != 'yuicompressor') {
+		if (opType != 'yui') {
 			return;
 		}
-		resultContainer.find('.download.extra').attr('href', prefix + '/handler/' + e.result.downloadYui)
 		var mirror2 = makeMirror(textareas[1], true);
 		// you scroll, i scroll
 		mirror1.on('scroll', function(e) {
 			mirror2.scrollTo(e.getScrollInfo().left, 0);
 		})
-		highChart(e.result);
+		highChart(result);
 	}
 
 	function trim(str) {
 		return str.replace('/^\s+|\s+$/g', '');
 	}
 
-	$('form input[type=submit]').click(function() {
+	$('input[type=button]').click(function() {
 		var jqThis = $(this),
-			form = jqThis.parents('form'),
 			opType = jqThis.data('type'),
 			scrollTop = $(window).scrollTop();
 		if (trim(textarea.value) == '' || 
@@ -310,33 +336,99 @@ $(function() {
 			Editor.focus();
 			return;
 		}
-		$.errorMsg('<div><div class="progress progress-striped active"><div class="bar" style="width: 100%;font-size:14px;">正在处理中，请稍候~~</div>\
-			</div></div>', 'CKstyling~~~');
-		//$("html, body").scrollTop(0);
-		$.ajax({
-			type: 'post',
-			url: './handler/request.php', 
-			data: form.serialize() + '&optype=' + opType,
-			dataType: 'json'
-		}).success(function(e) {
-			if (e.status == 'ok') {
-				handleResponse(e, opType);
-				var top = $('.result-container').position().top;
-				$("html, body").animate({scrollTop: top - 10 + "px" }, 1000);
-			} else {
-				$.errorMsg(e.responseText, '对不起，网络出了点小问题~');
+		// $.errorMsg('<div><div class="progress progress-striped active"><div class="bar" style="width: 100%;font-size:14px;">正在处理中，请稍候~~</div></div></div>', 'CKStyling~~~');
+		// $("html, body").animate({
+		// 	scrollTop: 0
+		// });
+
+		var code = jqTextarea.val()
+		var browsers = $('.browsers-hidden').val();
+		var safe = $('#safeModeInput').val()
+
+		var include = 'all'
+		var collector = [];
+		var options = $('.options input:checked');
+		options.each(function(i, node) {
+			collector.push($(node).attr('id'))
+		})
+		include = collector.join(',') || 'none'
+
+		var top = $('.result-container').position().top;
+		$("html, body").animate({scrollTop: top + 10}, 500);
+
+		seajs.use(['ckstyle/handle', 
+			'ckstyle/browsers/Analyser',
+			'ckstyle/command/args'], function(handler, analyser, args) {
+    		var CommandArgs = args.CommandArgs
+			var defaultConfig = new CommandArgs(opType)
+			var browser = analyser.analyse(browsers)
+			var browserValue
+			for(var prop in browser) {
+				browserValue = browser[prop]
 			}
-			$.hideErrorMsg();
-		}).error(function(e) {
-			$.hideErrorMsg();
-			$.errorMsg(e.responseText, '对不起，网络出了点小问题~');
-		});
+			browser = browserValue
+
+			defaultConfig.include = include
+			defaultConfig.safe = safe == "true"
+
+			handleResponse({
+				css: code,
+				checkresult: opType == 'check' ? handler.check(code, defaultConfig) : '',
+				yuimin: opType == 'yui' ? cssmin(code) : '',
+				compressed: (opType == 'compress' || opType == 'yui' ? handler.compress(code, defaultConfig, browser) : ''),
+				fixed: opType == 'fix' ? handler.fix(code, defaultConfig, browser) : ''
+			}, opType);
+		})
 	});
 
 	$('.result .close').click(function() {
 		$(this).parents('.result').hide();
 	});
 });
+
+define('ckstyle/handle', function(require, exports, module) {
+    var styler = require('./ckstyler');
+    var fill = require('./reporter/helper').fill;
+    var CssChecker = styler.CssChecker;
+
+    exports.check = function(css, config) {
+    	var checker = new CssChecker(css, config);
+	    checker.prepare()
+
+	    checker.doCheck();
+	    var result = checker.getErrors()
+	    result[0].forEach(function(obj) {
+	    	obj.errorMsg = fill(obj);
+	    })
+	    result[1].forEach(function(obj) {
+	    	obj.errorMsg = fill(obj);
+	    })
+	    result[2].forEach(function(obj) {
+	    	obj.errorMsg = fill(obj);
+	    })
+	    return {
+	    	logs: result[0],
+	    	warnings: result[1],
+	    	errors: result[2]
+	    };
+    }
+
+    exports.fix = function(css, config, browser) {
+    	var checker = new CssChecker(css, config);
+	    checker.prepare()
+
+	    var fixed = checker.doFix(browser);
+	    return (fixed);
+    }
+
+    exports.compress = function(css, config, browser) {
+    	var checker = new CssChecker(css, config);
+	    checker.prepare()
+
+	    var compressed = checker.doCompress(browser);
+	    return compressed;
+    }
+})
 
 // init options
 $(function() {
@@ -501,12 +593,15 @@ $(function() {
 	}
 
 	var wrappers = $('.wrapper'),
-		items = $('.menu a[href^=#]');
+		items = $('a[href^=#]');
 	items.click(function(e) {
+		$(window).scrollTop(0,0)
 		items.removeClass('current');
 		e.preventDefault();
 		wrappers.hide();
-		var href = $(this).addClass('current').attr('href');
+		var me = $(this);
+		$('.menu [href^=' + me.attr('href')+ ']').addClass('current');
+		var href = me.attr('href');
 		if (supportHistory) {
 			window.history.pushState({
 				href: href
