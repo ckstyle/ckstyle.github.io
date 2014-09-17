@@ -34,6 +34,7 @@ $.hideErrorMsg = function() {
 	    for(var prop in window) {
 	    	if (prop.indexOf('FED') == 0) {
 	    		var instance = new window[prop];
+	    		//console.log(instance.id + ' | ' + instance.__doc__.summary + ' | ' + instance.errorLevel)
 	    		RULES.push({
 	    			id: instance.id,
 	    			priority: instance.errorLevel,
