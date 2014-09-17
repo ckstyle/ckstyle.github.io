@@ -102,18 +102,18 @@ $(function() {
 	Editor.on('change', function() {
 		textarea.value = Editor.getValue();
 	})
-	Editor.setSelection({line: 0,ch: 0}, {line: 100, ch: textarea.value.length});
+	Editor.setSelection({line: 100,ch: textarea.value.length}, {line: 100, ch: textarea.value.length});
 	//jqTextarea.attr('placeholder', jqTextarea.val());
 	// locate to error pos 
 	top = $(textarea).next('.CodeMirror').position().top - 10;
 
 	function focusToLine(selector) {
 		var css = Editor.getValue(),
-			reg = new RegExp('\\s*' + selector + '\\s*{'),
+			reg = new RegExp('' + selector + '\\s*{'),
 			matched = reg.exec(css);
 		if (matched) {
 			index = matched.index;
-			lineNo = css.substring(0, index).split('\n').length;
+			lineNo = css.substring(0, index).split('\n').length - 1;
 			Editor.setSelection({ line: lineNo, ch: 0 }, { line: lineNo, ch:100});
 			scrollTo(0, top);
 			Editor.scrollIntoView({line: lineNo, ch:0}, 90);
@@ -122,7 +122,7 @@ $(function() {
 		}
 	}
 
-	$('.ckstyle-result').delegate('li[data-pos]', 'click', function() {
+	$('.check-result').delegate('li[data-pos]', 'click', function() {
 		var pos = $(this).data('pos');
 		if (!pos) {
 			Editor.setSelection({ line: 0, ch: 0 }, { line: 0, ch: textarea.value.split('\n')[0].length });
@@ -168,7 +168,6 @@ $(function() {
 	function improve(type, before, result) {
 		if (type == 'check') {
 			result = result.checkresult;
-			console.log(result);
 			if ((!result.errors || result.errors.length == 0) && 
 				(!result.warnings || result.warnings.length == 0) && 
 				(!result.logs || result.logs.length == 0)) {
