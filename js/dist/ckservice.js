@@ -12686,20 +12686,20 @@ CSSParser.prototype.doParse = function(config) {
         return;
     }
     var prevChar = null, inComment = false, length = self.totalLength,
-        text = self.roughCss, selector = '', commentText = '', i = -1 , 
-        comments = []
+        text = self.roughCss, selector = '', commentText = '', charIndex = -1 , 
+        comments = [], char
     var realComment;
     while (true) {
-        if (i == length - 1) {
+        if (charIndex >= length - 1) {
             break;
         }
-        i = i + 1
-        var char = text[i]
-        if (!inComment && isCommentStart(char, text, i)) {
+        charIndex = charIndex + 1
+        char = text[charIndex]
+        if (!inComment && isCommentStart(char, text, charIndex)) {
             commentText = ''
             inComment = true
         }
-        if (isCommentEnd(char, text, i)) {
+        if (isCommentEnd(char, text, charIndex)) {
             commentText = commentText + char
             inComment = false
             comments.push(commentText)
@@ -12711,7 +12711,7 @@ CSSParser.prototype.doParse = function(config) {
             continue;
         }
         if (isSpecialStart(char)) {
-            var tmp = handleSpecialStatement(text, i, length, char);
+            var tmp = handleSpecialStatement(text, charIndex, length, char);
             var nextPos = tmp[0];
             var attrs = tmp[1];
             var operator = tmp[2];
@@ -12722,7 +12722,7 @@ CSSParser.prototype.doParse = function(config) {
                     comments = []
                 }
                 self.styleSheet.addExtraStatement(operator, char + attrs + text[nextPos], realComment)
-                i = nextPos
+                charIndex = nextPos
                 selector = ''
                 commentText = ''
                 comments = []
@@ -12731,7 +12731,7 @@ CSSParser.prototype.doParse = function(config) {
         }
 
         if (char == '{') {
-            var tmp = findCharFrom(text, i, length, '{', '}');
+            var tmp = findCharFrom(text, charIndex, length, '{', '}');
             var nextBracePos = tmp[0];
             var attributes = tmp[1];
             // do not need the last brace
@@ -12741,14 +12741,16 @@ CSSParser.prototype.doParse = function(config) {
                 comments = []
             }
             if (isNestedStatement(selector)) {
-                var nestedCss = attributes.slice(0, -1)
+                var nestedCss = attributes
+                // remove end '}'
+                nestedCss = nestedCss.slice(0, -1)
                 var stmt = self.styleSheet.addNestedRuleSet(selector, nestedCss, realComment)
                 parseNestedStatment(stmt, nestedCss, this.fileName, this.config)
             } else {
                 self.styleSheet.addRuleSetByStr(selector, attributes.slice(0, -1), realComment)
             }
             commentText = ''
-            i = nextBracePos
+            charIndex = nextBracePos
             selector = ''
         } else if (char == '}') {
             selector = ''
@@ -12930,6 +12932,7 @@ var Class = base.Class
 var RuleSetChecker = base.RuleSetChecker
 var helper = require('./helper')
 var combiner = require('./combiners/CombinerFactory')
+var combineHelper = require('./combiners/helper');
 
 module.exports = global.FEDCombineInToOne = new Class(RuleSetChecker, function() {
     
@@ -12971,11 +12974,10 @@ module.exports = global.FEDCombineInToOne = new Class(RuleSetChecker, function()
             // do not do any hack combine
             if (helper.containsHack(rule))
                 return
-            // -moz-border-radius, -o-border-radius is not for me
-            if (helper.isCss3PrefixProp(name))
+            if (helper.getCss3PrefixValue(rule.strippedName) != 0)
                 return
 
-            var bigger = helper.canBeCombined(name)
+            var bigger = combineHelper.canBeCombined(name)
             if (bigger) {
                 if (bigger in counter) {
                     if (forFix) {
@@ -16204,26 +16206,30 @@ var BorderCombiner = new Class(Combiner, function() {
 
     this.join = function(self) {
         var collector = [];
-        var hasWidth, hasStyle, hasColor;
+        var hasWidth, counter = 0;
         if (self.collector['border-width']) {
             hasWidth = 1
+            counter++
             collector.push(self.collector['border-width'])
         }
         if (self.collector['border-style']) {
-            hasStyle = 1
+            counter++
             collector.push(self.collector['border-style'])
         }
         if (self.collector['border-color']) {
-            hasColor = 1
+            counter++
             collector.push(self.collector['border-color'])
         }
-        if (hasWidth) {
-            self.combined = collector.join(' ')
-        } else {
-            self.combined = ''
+        if (counter <= 1 && !hasWidth) {
             self.deleted = []
             self.hasFather = false
+            self.combined = ''
+            return
         }
+        if (counter > 1 && !hasWidth) {
+            collector.unshift('medium')
+        }
+        self.combined = collector.join(' ')
     }
 
     this.combine = function(self) {
@@ -16235,6 +16241,113 @@ var BorderCombiner = new Class(Combiner, function() {
 })
 
 module.exports = BorderCombiner
+
+})
+// auto generated by concat 
+;define('ckstyle/plugins/combiners/BorderRadiusCombiner', function(require, exports, module) {
+
+var base = require('../../base')
+var Class = base.Class
+var helper = require('./helper')
+var Combiner = require('./Combiner')
+
+
+var BorderRadiusCombiner = new Class(Combiner, function() {
+
+    this.__init__ = function(self, name, attrs) {
+        self.name = name
+        self.attrs = attrs
+        self.combined = ''
+        self.collector = {}
+        self.deleted = []
+        self.hasFather = false
+        self.initSubs()
+    }
+
+    this.initSubs = function(self) {
+        var name = self.name
+        self.collector['border-top-left-radius'] = ''
+        self.collector['border-top-right-radius'] = ''
+        self.collector['border-bottom-left-radius'] = ''
+        self.collector['border-bottom-right-radius'] = ''
+    }
+
+    this._seperate = function(self, value) {
+        var splited = value.split(' ')
+        var a = b = c = d = ''
+        var length = helper.len(splited)
+        if (length == 1) {
+            a = b = c = d = value
+        } else if (length == 2) {
+            a = c = splited[0].trim()
+            d = b = splited[1].trim()
+        } else if (length == 3) {
+            a = splited[0].trim()
+            d = b = splited[1].trim()
+            c = splited[2].trim()
+        } else if (length >= 4) {
+            a = splited[0].trim()
+            b = splited[1].trim()
+            c = splited[2].trim()
+            d = splited[3].trim()
+        }
+        var name = self.name
+        self.collector['border-top-left-radius'] = a
+        self.collector['border-top-right-radius'] = b
+        self.collector['border-bottom-right-radius'] = c
+        self.collector['border-bottom-left-radius'] = d
+    }
+
+    this.collect = function(self) {
+        var name = self.name
+        var attrs = self.attrs
+        attrs.forEach(function(prop) {
+            if (helper.containsHack(prop[0], prop[1], prop[2]))
+                return
+
+            if (prop[1] == name) {
+                self.hasFather = true
+                self._seperate(prop[2])
+            } else {
+                if (!(prop[1] in self.deleted)) {
+                    self.deleted.push(prop[1])
+                }
+                self.collector[prop[0]] = prop[2]
+            }
+        })
+    }
+
+    this.join = function(self) {
+        var top = self.collector['border-top-left-radius']
+        var right = self.collector['border-top-right-radius']
+        var bottom = self.collector['border-bottom-right-radius']
+        var left = self.collector['border-bottom-left-radius']
+
+        if (left == '' || top == '' || right == '' || bottom == '') {
+            self.combined = null
+            self.deleted = []
+            return
+        }
+
+        if (left == right && right == bottom && bottom == top) {
+            self.combined = left
+        } else if (left == right && bottom == top) {
+            self.combined = top + ' ' + left
+        } else if (top != bottom && left == right) {
+            self.combined = top + ' ' + right + ' ' + bottom
+        } else {
+            self.combined = top + ' ' + right + ' ' + bottom + ' ' + left
+        }
+    }
+
+    this.combine = function(self) {
+        self.collect()
+        self.join()
+        return [self.combined, self.deleted, self.hasFather]
+    }
+})
+
+module.exports = BorderRadiusCombiner
 
 })
 // auto generated by concat 
@@ -16262,8 +16375,10 @@ var combiners = {
     margin: require('./MarginCombiner'),
     padding: require('./PaddingCombiner'),
     background: require('./BackgroundCombiner'),
+    outline: require('./OutlineCombiner'),
     border: require('./BorderCombiner'),
-    font: require('./FontCombiner')
+    font: require('./FontCombiner'),
+    'border-radius': require('./BorderRadiusCombiner')
 }
 
 function doCombine(name, props) {
@@ -16438,6 +16553,102 @@ module.exports = MarginCombiner
 
 })
 // auto generated by concat 
+;define('ckstyle/plugins/combiners/OutlineCombiner', function(require, exports, module) {
+
+var base = require('../../base')
+var Class = base.Class
+var helper = require('./helper')
+var Combiner = require('./Combiner')
+
+var OutlineCombiner = new Class(Combiner, function() {
+
+    this.__init__ = function(self, name, attrs) {
+        self.name = name
+        self.attrs = attrs
+        self.combined = ''
+        self.collector = {}
+        self.deleted = []
+    }
+
+    this.fill = function(self, prop, val) {
+        self.collector[self.name + '-' + prop] = val
+    }
+
+    this._seperate = function(self, value) {
+        value = value.replace(/\s*,\s*/g, ',')
+        var splited = value.split(' ')
+        var length = helper.len(splited)
+        if (length == 1) {
+            this.fill('width', value)
+        } else if (length == 2) {
+            this.fill('width', splited[0])
+            this.fill('style', splited[1])
+        } else if (length == 3) {
+            this.fill('width', splited[0])
+            this.fill('style', splited[1])
+            this.fill('color', splited[2])
+        }
+    }
+
+    this.collect = function(self) {
+        var name = self.name
+        var attrs = self.attrs
+        attrs.forEach(function(prop) {
+            if (helper.containsHack(prop[0], prop[1], prop[2]))
+                return
+
+            if (prop[1] == name) {
+                self.hasFather = true
+                self._seperate(prop[2])
+            } else {
+                if (!(prop[1] in self.deleted)) {
+                    self.deleted.push(prop[1])
+                }
+                self.collector[prop[0]] = prop[2]
+            }
+        })
+    }
+
+    this.join = function(self) {
+        var collector = [];
+        var hasWidth, counter = 0;
+        if (self.collector['outline-width']) {
+            hasWidth = 1
+            counter++
+            collector.push(self.collector['outline-width'])
+        }
+        if (self.collector['outline-style']) {
+            counter++
+            collector.push(self.collector['outline-style'])
+        }
+        if (self.collector['outline-color']) {
+            counter++
+            collector.push(self.collector['outline-color'])
+        }
+        if (counter <= 1 && !hasWidth) {
+            self.deleted = []
+            self.hasFather = false
+            self.combined = ''
+            return
+        }
+        if (counter > 1 && !hasWidth) {
+            collector.unshift('invert')
+        }
+        self.combined = collector.join(' ')
+    }
+
+    this.combine = function(self) {
+        self.collect()
+        self.join()
+        return [self.combined, self.deleted, self.hasFather]
+    }
+
+})
+
+module.exports = OutlineCombiner
+
+})
+// auto generated by concat 
 ;define('ckstyle/plugins/combiners/PaddingCombiner', function(require, exports, module) {
 
 var base = require('../../base')
@@ -16550,6 +16761,62 @@ module.exports = PaddingCombiner
 function containsHack(name, strippedName, value) {
     return name != strippedName || value.indexOf('\\9') != -1
 }
+
+var canBeCombinedProps = {
+    'border-radius': [
+        'border-top-left-radius',
+        'border-top-right-radius',
+        'border-bottom-right-radius',
+        'border-bottom-left-radius'
+    ],
+    border: [
+        'border-width', 
+        'border-style', 
+        'border-color'
+    ],
+    outline: [
+        'outline-width', 
+        'outline-style', 
+        'outline-color'
+    ],
+    margin: [
+        'margin-top', 
+        'margin-right', 
+        'margin-bottom', 
+        'margin-left'
+    ],
+    padding: [
+        'padding-top', 
+        'padding-right', 
+        'padding-bottom', 
+        'padding-left'
+    ],
+    background: [
+        'background-color', 
+        'background-image', 
+        'background-repeat', 
+        'background-attachment', 
+        'background-position'
+    ],
+    font: [
+        'font-style', 
+        'font-weight', 
+        'font-size', 
+        'line-height', 
+        'font-family'
+    ]
+}
+
+function canBeCombined(prop) {
+    prop = prop.trim()
+    for(var x in canBeCombinedProps) {
+        if (prop == x || prop.indexOf(x) == 0 || canBeCombinedProps[x].indexOf(prop) != -1) {
+            return x;
+        }
+    }
+    return null;
+}
+exports.canBeCombined = canBeCombined;
 
 function camelCase(name) {
     var splited = name.split('-')
@@ -16725,51 +16992,6 @@ function isCss3Prop(prop) {
     return containsInArray(allCss3Props, prop)
 }
 exports.isCss3Prop = isCss3Prop;
-
-var canBeCombinedProps = {
-    border: [
-        'border-width', 
-        'border-style', 
-        'border-color'
-    ],
-    margin: [
-        'margin-top', 
-        'margin-right', 
-        'margin-bottom', 
-        'margin-left'
-    ],
-    padding: [
-        'padding-top', 
-        'padding-right', 
-        'padding-bottom', 
-        'padding-left'
-    ],
-    background: [
-        'background-color', 
-        'background-image', 
-        'background-repeat', 
-        'background-attachment', 
-        'background-position'
-    ],
-    font: [
-        'font-style', 
-        'font-weight', 
-        'font-size', 
-        'line-height', 
-        'font-family'
-    ]
-}
-
-function canBeCombined(prop) {
-    prop = prop.trim()
-    for(var x in canBeCombinedProps) {
-        if (prop.indexOf(x) == 0 || canBeCombinedProps[x].indexOf(prop) != -1) {
-            return x;
-        }
-    }
-    return null;
-}
-exports.canBeCombined = canBeCombined;
 
 function countStrLen(str) {
     var chns = str.match(/[\u4e00-\u9fa5]+/g)
