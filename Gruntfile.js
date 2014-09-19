@@ -21,13 +21,11 @@ module.exports = function(grunt) {
           "js/lib/json2.js",
           "js/lib/modernizr-2.0.6.js",
           "js/lib/jquery.js",
-          "js/lib/sea.js",
           "tools/bootstrap/js/bootstrap.js",
           "tools/codemirror/lib/codemirror.js",
           "tools/codemirror/mode/css/css.js",
           "js/lib/highcharts.js",
           "js/lib/mustache.js",
-          "js/dist/ckstyle.js",
           "js/lib/cssmin.js",
           "js/main.js"
         ],
