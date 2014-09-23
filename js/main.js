@@ -8,6 +8,33 @@ define('http', {})
 define('https', {})
 define('url', {})
 
+define('ckstyle/ckservice', function(require, exports, module) {
+    var styler = require('./ckstyler');
+    var CssChecker = styler.CssChecker;
+
+    exports.doCompress = function(css) {
+        var checker = new CssChecker(css);
+        checker.prepare()
+        return checker.doCompress();
+    }
+
+    exports.doFix = function(css) {
+        var checker = new CssChecker(css)
+        checker.prepare();
+        return checker.doFix()
+    }
+
+    exports.doFormat = function(css) {
+        var checker = new CssChecker(css)
+        checker.prepare();
+        return checker.doFormat()
+    }
+})
+
+seajs.use('ckstyle/ckservice', function(service) {
+	window.service = service
+})
+
 define('clean-css/go', function(require, exports) {
     var CleanCSS = require('./lib/clean')
 
@@ -198,7 +225,11 @@ $(function() {
 					    <h4>by clean-css <span class="stumb" style="margin-left:57px;"></span><span style="font-size:14px;">[节省字符: {{after2}}/{{before2}}=<span class="CK">{{rate2}}</span>%]</span></h4>\
 					    <textarea>{{cleancss}}</textarea>\
 					    <hr style="margin:10px 0;">\
-					    <div id="highchart-container-cleancss" style="width: 600px; height: 300px; margin: 0 auto;box-shadow: 1px 1px 2px #ccc;"></div>'
+					    <div id="highchart-container-cleancss" style="width: 600px; height: 300px; margin: 0 auto;box-shadow: 1px 1px 2px #ccc;"></div>',
+		differ: '<div class="diff-con">\
+					<div class="diff-viewer"></div>\
+					<div class="diff-close">&times;</div>\
+				</div>'
 	};
 
 	function improve(type, before, result) {
@@ -334,6 +365,34 @@ $(function() {
 	    });
 	}
 
+	function diffUsingJS(base, newtxt, beforeText, afterText) {
+		$('.diff-con').remove();
+		$(templates.differ).hide().appendTo('body').show('slow');
+		$('.diff-con').delegate('.diff-close', 'click', function() {
+			$('.diff-con').hide('slow', function() {
+				$(this).remove();
+			})
+		})
+		
+        base = difflib.stringAsLines(base)
+        newtxt = difflib.stringAsLines(newtxt)
+        var sm = new difflib.SequenceMatcher(base, newtxt),
+            opcodes = sm.get_opcodes(),
+            diffoutputdiv = $('.diff-viewer')[0];
+
+        diffoutputdiv.innerHTML = "";
+
+        diffoutputdiv.appendChild(diffview.buildView({
+            baseTextLines: base,
+            newTextLines: newtxt,
+            opcodes: opcodes,
+            baseTextName: beforeText || "Before(Raw)",
+            newTextName: afterText || "After(Precisely Fixed)",
+            contextSize: 200,
+            viewType: 0
+        }));
+    }
+
 	// var prefix = document.location.href.toLowerCase().indexOf('fed.d.xiaonei.com') != -1 ? '/ckstyle' : '';
 	function handleResponse(result, opType) {
 		if (result.css) {
@@ -354,10 +413,19 @@ $(function() {
 		if (opType == 'check') {
 			return;
 		}
+
+		resultContainer.find('.diff-btn').click(function() {
+			var me = result.compressed
+			var he = result.yuimin || result.cleancss
+			setTimeout(function() {
+                diffUsingJS(service.doFormat(me), service.doFormat(he), 'Before(Simply Formatted)')
+			}, 16);
+		})
+
+
 		var textareas = $('.' + opType + '-result').find('textarea');
 		var mirror1 = makeMirror(textareas[0], opType == 'yui' || opType == 'cleancss');
 		if (opType == 'yui') {
-			
 			var mirror2 = makeMirror(textareas[1], true);
 			// you scroll, i scroll
 			mirror1.on('scroll', function(e) {

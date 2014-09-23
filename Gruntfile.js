@@ -27,6 +27,8 @@ module.exports = function(grunt) {
           "js/lib/highcharts.js",
           "js/lib/mustache.js",
           "js/lib/cssmin.js",
+          "tools/difflib/difflib.js",
+          "tools/difflib/diffview.js",
           "js/main.js"
         ],
         dest: 'js/all.js'  

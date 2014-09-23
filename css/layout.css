@@ -419,3 +419,26 @@ h3 {
 ol li, ul li {
     padding: 5px;
 }
+
+.diff-btn {
+    position: absolute;
+    right: 100px;
+    top: 3px;
+}
+
+.diff-con {
+    position: fixed; left: 0; top: 0; bottom: 0; right: 0; background-color: rgba(0,0,0,.7); z-index: 3000; padding-top: 50px;
+}
+
+
+.diff-viewer {
+    margin-top: 40px; width: 90%; margin: 0 auto; max-height: 500px; overflow-y: auto;
+}
+
+.diff-close {
+    font-size: 60px; color: #EEE; position: absolute; right: 0; top: 0; z-index: 1000000; cursor: pointer;
+}
+
+.diff-close:hover {
+    color: #999;
+}
