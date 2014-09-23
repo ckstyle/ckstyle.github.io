@@ -20258,7 +20258,7 @@ $(function() {
 						</h4>\
 						<textarea>{{compressed}}</textarea>\
 						<hr style="margin:10px 0;">\
-					    <h4>by clean-css <span style="font-size:14px;">[节省字符: {{after2}}/{{before2}}=<span class="CK">{{rate2}}</span>%]</span></h4>\
+					    <h4>by clean-css <span class="stumb" style="margin-left:57px;"></span><span style="font-size:14px;">[节省字符: {{after2}}/{{before2}}=<span class="CK">{{rate2}}</span>%]</span></h4>\
 					    <textarea>{{cleancss}}</textarea>\
 					    <hr style="margin:10px 0;">\
 					    <div id="highchart-container-cleancss" style="width: 600px; height: 300px; margin: 0 auto;box-shadow: 1px 1px 2px #ccc;"></div>'
