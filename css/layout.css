@@ -436,7 +436,7 @@ ol li, ul li {
 }
 
 .diff-close {
-    font-size: 60px; color: #EEE; position: absolute; right: 0; top: 0; z-index: 1000000; cursor: pointer;
+    font-size: 60px; color: #EEE; position: absolute; right: 10px; top: 10px; z-index: 1000000; cursor: pointer;
 }
 
 .diff-close:hover {
