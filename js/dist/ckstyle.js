@@ -627,6 +627,8 @@ var findInArray = base.findInArray
 var args = require('./command/args');
 var defaultConfig = new args.CommandArgs()
 
+var timer = require('./utils/timer')
+
 function extend(target, src) {
     for(var prop in src) {
         if (prop in target) {
@@ -669,7 +671,23 @@ var CssChecker = new Class(function() {
 
     this.prepare = function(self, pluginDir, config) {
         this.loadPlugins(pluginDir);
+        this.sortPlugins()
         this.doParse(config);
+    }
+
+    this.sortPlugins = function(self) {
+        self.ruleSetCheckers.sort(function(a, b) {
+            return (a.order || 10000) - (b.order || 10000)
+        })
+        self.ruleCheckers.sort(function(a, b) {
+            return (a.order || 10000) - (b.order || 10000)
+        })
+        self.styleSheetCheckers.sort(function(a, b) {
+            return (a.order || 10000) - (b.order || 10000)
+        })
+        self.extraCheckers.sort(function(a, b) {
+            return (a.order || 10000) - (b.order || 10000)
+        })
     }
 
     this.resetStyleSheet = function(self) {
@@ -882,7 +900,7 @@ var CssChecker = new Class(function() {
     this.doCompress = function(self, browser) {
         browser = browser || ALL;
         self.config._inner.curBrowser = browser
-        self.doFix(browser)
+        self.doFix(browser, 'compress')
         return self.getStyleSheet().compress(browser).trim()
     }
 
@@ -891,16 +909,18 @@ var CssChecker = new Class(function() {
         return self.getStyleSheet().fixed()
     }
 
-    this.doFix = function(self, browser) {
-        self.config.operation = 'fix'
+    this.doFix = function(self, browser, operation) {
+        self.config.operation = operation || 'fix'
         browser = browser || ALL;
         self.resetStyleSheet()
+
         // 忽略的规则集（目前只忽略单元测试的selector）
         var ignoreRulesets = self.config.ignoreRulesets
 
         // fix规则集
         function fixRuleSet(ruleSet) {
             self.ruleSetCheckers.forEach(function(checker) {
+                timer.start(checker.id)
                 if (!checker.fix) {
                     return;
                 }
@@ -909,6 +929,7 @@ var CssChecker = new Class(function() {
                     ruleSet.fixedComment = ruleSet.comment
                 }
                 checker.fix(ruleSet, self.config)
+                timer.end(checker.id)
             });
         }
 
@@ -919,6 +940,7 @@ var CssChecker = new Class(function() {
                     if (!checker.fix) {
                         return;
                     }
+                    timer.start(checker.id)
 
                     // 确保fixedName/fixedValue一定有值
                     // fix中一定要针对fixedName/fixedValue来判断，确保其他plugin的fix不会被覆盖
@@ -928,6 +950,7 @@ var CssChecker = new Class(function() {
                     }
                     // print checker.id, checker, rule.fixedValue
                     checker.fix(rule, self.config)
+                    timer.end(checker.id)
                 });
             });
         }
@@ -937,11 +960,13 @@ var CssChecker = new Class(function() {
                 if (!checker.fix) {
                     return;
                 }
+                timer.start(checker.id)
                 if (ruleSet.fixedSelector == '') {
                     ruleSet.fixedSelector = ruleSet.selector
                     ruleSet.fixedStatement = ruleSet.statement
                 }
                 checker.fix(ruleSet, self.config)
+                timer.end(checker.id)
             });
         }
 
@@ -966,15 +991,23 @@ var CssChecker = new Class(function() {
         // 最后fix styleSheet
         self.styleSheetCheckers.forEach(function(checker) {
             if (checker.fix) {
+                timer.start(checker.id)
                 checker.fix(styleSheet, self.config)
+                timer.end(checker.id)
             }
         });
-        return self.getStyleSheet().fixed(self.config)
+        timer.start('exports')
+        var res = self.getStyleSheet().fixed(self.config)
+        timer.end('exports')
+        timer.report()
+        return res
     }
 
     this.doCheck = function(self) {
         // 忽略的规则集（目前只忽略单元测试的selector）
         var ignoreRulesets = self.config.ignoreRulesets
+
+        self.config.operation = 'check'
 
         function isBoolean(value) {
             return value === true || value === false;
@@ -1102,12 +1135,13 @@ var CommandArgs = new Class(function() {
 
         self.errorLevel = 2
         self.recursive = false
-        self.print = false
+        // self.print = true
+        self.output = ''
         self.include = 'all'
         self.exclude = 'none'
         self.config = ''
 
-        self.extension = EXTS[self.operation] || '.ckstyle.txt'
+        // self.extension = EXTS[self.operation] || '.ckstyle.txt'
 
         self.standard = ''
         self.json = false
@@ -1117,7 +1151,7 @@ var CommandArgs = new Class(function() {
 
         self.combine = true
         self.browsers = null
-        self.noBak = false
+        // self.noBak = false
 
         // for CKStyle inner use
         self._inner = {
@@ -1207,14 +1241,11 @@ function checkFile(filePath, config) {
     var fileContent = fs.readFileSync(filePath, {encoding: 'utf-8'})
     logger.log('[check] checking ' + filePath)
     var checker = doCheck(fileContent, filePath, config)
-    var path = filePath + config.extension
+    var path = config.output
     if (checker.hasError()) {
         var reporter = ReporterUtil.getReporter(config.json ? 'json' : 'text', checker)
         reporter.doReport()
-        if (config.print) {
-            if (fs.existsSync(path)) {
-                fs.unlinkSync(path)
-            }
+        if (!path) {
             logger.out(reporter.export() + '\n')
         } else {
             fs.writeFileSync(path, reporter.export())
@@ -1226,14 +1257,9 @@ function checkFile(filePath, config) {
             logger.ok('{"status":"ok","result":"' + filePath + ' is ok"}')
         else
             logger.ok('[check] ' + filePath + ' is ok\n')
-        if (fs.existsSync(path)) {
-            fs.unlinkSync(path)
-        }
         return true
     }
 } 
-
-
 
 function check(file, config) {
     if (!file || !fs.existsSync(file)) {
@@ -1250,7 +1276,6 @@ function check(file, config) {
         checkFile(file, config)
     }
 }
-
 
 function checkDir(directory, config) {
     config = config || defaultConfig
@@ -1341,31 +1366,17 @@ function compressFile(filePath, config) {
         return;
     }
 
-    var extension = config.extension
-    if (extension.toLowerCase() == 'none')
-        extension = null
-    if (extension && endswith(filePath, extension))
-        return
+    var path = config.output
+
     var fileContent = fs.readFileSync(filePath, {encoding: 'utf-8'})
-    if (!config.print)
+    if (path)
         logger.ok('[compress] compressing ' + filePath)
-    var path = filePath
-    var basic = filePath.split('.css')[0]
-    if (!extension) {
-        if (config.noBak === false)
-            fs.writeFileSync(path + '.bak', fileContent)
-    } else {
-        path = filePath.split('.css')[0] + extension
-    }
 
     if (!config.browsers) {
         var result = doCompress(fileContent, filePath, config)
         checker = result[0]
         message = result[1]
-        if (config.print) {
-            if (extension && fs.existsSync(path)) {
-                fs.unlinkSync(path)
-            }
+        if (!path) {
             logger.out(message)
         } else {
             fs.writeFileSync(path, message)
@@ -1380,13 +1391,10 @@ function compressFile(filePath, config) {
             // 尤其是合并过的CSS规则集
             checker = prepare(fileContent, filePath, config)
             message = checker.doCompress(value)
-            path = filePath.split('.css')[0] + '.' + key + '.min.css'
-            if (config.print) {
-                if (extension && fs.existsSync(path)) {
-                    fs.unlinkSync(path)
-                }
+            if (!config.output) {
                 logger.out((onlyOne ? '' : (key + ' : ')) + message)
             } else {
+                path = filePath.split('.css')[0] + '.' + key + '.min.css'
                 fs.writeFileSync(path, message)
                 logger.ok('[compress] compressed ==> ' + path)
             }
@@ -1492,32 +1500,19 @@ function fixFile(filePath, config) {
     }
 
     config = config || defaultConfig
+    
+    path = config.output
 
-    extension = config.extension
-
-    if (extension.toLowerCase() == 'none')
-        extension = null
-    if (extension != null && endswith(filePath, extension))
-        return
-    fileContent = fs.readFileSync(filePath, {encoding: 'utf-8'})
-    if (!config.print)
+    if (path)
         logger.ok('[fix] fixing ' + filePath)
+
+    fileContent = fs.readFileSync(filePath, {encoding: 'utf-8'})
 
     var result = doFix(fileContent, filePath, config)
     checker = result[0]
     msg = result[1]
 
-    path = filePath
-    if (extension == null) {
-        if (!config.noBak)
-            fs.writeFileSync(path + '.bak', fileContent)
-    } else {
-        path = filePath.split('.css')[0] + extension
-    }
-    if (config.print) {
-        if (extension && fs.existsSync(path)) {
-            fs.unlinkSync(path)
-        }
+    if (!path) {
         logger.out(msg)
     } else {
         fs.writeFileSync(path, msg)
@@ -1621,36 +1616,23 @@ function formatFile(filePath, config) {
     }
 
     config = config || defaultConfig
+    path = config.output
 
-    extension = config.extension
-
-    if (extension.toLowerCase() == 'none')
-        extension = null
-    if (extension != null && endswith(filePath, extension))
-        return
     fileContent = fs.readFileSync(filePath, {encoding: 'utf-8'})
-    if (!config.print)
-        logger.ok('[format] fixing ' + filePath)
+
+    if (path) {
+        logger.ok('[format] formatting ' + filePath)
+    }
 
     var result = doFormat(fileContent, filePath, config)
     checker = result[0]
     msg = result[1]
 
-    path = filePath
-    if (extension == null) {
-        if (!config.noBak)
-            fs.writeFileSync(path + '.bak', fileContent)
-    } else {
-        path = filePath.split('.css')[0] + extension
-    }
-    if (config.print) {
-        if (extension && fs.existsSync(path)) {
-            fs.unlinkSync(path)
-        }
+    if (!path) {
         logger.out(msg)
     } else {
         fs.writeFileSync(path, msg)
-        logger.ok('[format] fixed ==> ' + path)
+        logger.ok('[format] formatted ==> ' + path)
     }
 } 
 
@@ -3096,39 +3078,6 @@ module.exports = global.FEDCss3PropSpaces = new Class(RuleChecker, function () {
 
 })
 // auto generated by concat 
-;define('ckstyle/plugins/FED1DistinguishBrowserRule', function(require, exports, module) {
-
-var base = require('../base');
-var ERROR_LEVEL = base.ERROR_LEVEL;
-var Class = base.Class;
-var RuleChecker = base.RuleChecker;
-var helper = require('./helper');
-var Browser = require('../browsers/Detector').Browser
-
-module.exports = global.FEDDistinguishBrowserRule = new Class(RuleChecker, function () {
-    
-    this.__init__ = function (self) {
-        self.id = 'rule-for-browsers'
-        self.errorLevel = ERROR_LEVEL.ERROR
-        self.errorMsg = ''
-    }
-
-    this.check = function (self, rule, config) {
-        return true
-    }
-
-    this.fix = function(self, rule, config) {
-        Browser.handleRule(rule)
-    }
-
-    this.__doc__ = {
-        "summary":"在属性级别区分浏览器",
-        "desc":"目的是针对不同的浏览器，生成不同的CSS"
-    }
-})
-
-})
-// auto generated by concat 
 ;define('ckstyle/plugins/FED1FixCommentInValue', function(require, exports, module) {
 
 var base = require('../base')
@@ -4491,39 +4440,6 @@ module.exports = global.FEDCommentLengthLessThan80 = new Class(RuleSetChecker, f
 
 })
 // auto generated by concat 
-;define('ckstyle/plugins/FED2DistinguishBrowserRuleSet', function(require, exports, module) {
-
-var base = require('../base');
-var ERROR_LEVEL = base.ERROR_LEVEL;
-var Class = base.Class;
-var RuleSetChecker = base.RuleSetChecker;
-var helper = require('./helper');
-var Browser = require('../browsers/Detector').Browser
-
-module.exports = global.FEDDistinguishBrowserRuleSet = new Class(RuleSetChecker, function () {
-    
-    this.__init__ = function (self) {
-        self.id = 'ruleset-for-browsers'
-        self.errorLevel = ERROR_LEVEL.ERROR
-        self.errorMsg = ''
-    }
-
-    this.check = function (self, ruleSet, config) {
-        return true
-    }
-
-    this.fix = function(self, ruleSet, config) {
-        Browser.handleRuleSet(ruleSet)
-    }
-
-    this.__doc__ = {
-        "summary":"在规则集级别区分浏览器",
-        "desc":"目的是针对不同的浏览器，生成不同的CSS规则集"
-    }
-})
-
-})
-// auto generated by concat 
 ;define('ckstyle/plugins/FED2DoNotSetStyleForSimpleSelector', function(require, exports, module) {
 
 var base = require('../base');
@@ -5508,17 +5424,17 @@ var doRuleSetDetect = require('../browsers/Hacks').doRuleSetDetect
 module.exports = global.FEDCombineSameRuleSets = new Class(StyleSheetChecker, function() {
     
     this.__init__ = function(self) {
-        this.notSafe = true
         self.id = 'combine-same-rulesets'
         self.errorLevel = ERROR_LEVEL.WARNING
         self.errorMsg_empty = '"%s" contains the same rules in "${file}"'
         self.errorMsg = ''
+        self.order = 1
     }
 
     // can be checked correctly only after reorder/fix/compress, so do not check
     this.check = function(self, styleSheet, config) {
         var ruleSets = styleSheet.getRuleSets()
-        var mapping = self._gen_hash(ruleSets, ALL)
+        var mapping = self.rulesetMapper(ruleSets, ALL)
         var length = helper.len(mapping)
 
         var errors = {}
@@ -5550,29 +5466,22 @@ module.exports = global.FEDCombineSameRuleSets = new Class(StyleSheetChecker, fu
     this.fix = function(self, styleSheet, config) {
         var browser = config._inner.curBrowser ? config._inner.curBrowser : ALL
         var ruleSets = styleSheet.getRuleSets()
-        var mapping = self._gen_hash(ruleSets, browser)
+        var mapping = self.rulesetMapper(ruleSets, browser)
 
         var length = helper.len(mapping)
 
-        var splitedSelectors = []
-        for (var i = 0; i < length; i++) {
-            var splited = mapping[i][0].split(',');
-            splited.forEach(function(x) {
-                x = x.trim();
-                if (x != '') {
-                    splitedSelectors.push(x);
-                }
-            })
-        }
-
-        for (var i = 0; i < length; i++) {          
+        for (var i = 0; i < mapping.length; i++) {     
             if (mapping[i][0] == 'extra')
                 continue
-            var selectorHistory = []
 
-            for (var j = i + 1; j < length; j++) {
+            var delta = 1;
+            for (var j = i + 1; j < mapping.length; j++) {
+                // 如果是safe模式，则只看紧贴在后面的
+                if (config.safe && j != i + delta) {
+                    continue
+                }
+
                 if (mapping[i][1] != mapping[j][1]) {
-                    selectorHistory = selectorHistory.concat(splitedSelectors[j])
                     continue
                 }
 
@@ -5580,38 +5489,16 @@ module.exports = global.FEDCombineSameRuleSets = new Class(StyleSheetChecker, fu
                 // 1、两者必须都与当前要求的浏览器兼容，即 browserI & browser != 0 and browserJ & browser != 0
                 // 2、两者的浏览器兼容性必须完全一致，即 browserI ^ browserJ == 0
                 // 第二点主要是因为有的属性合并以后，由于兼容性不同，受不兼容的selector影响，使本应该兼容的selector失效。
-                var browserI = doRuleSetDetect(mapping[i][0])
-                var browserJ = doRuleSetDetect(mapping[j][0])
+                var browserI = mapping[i][2]
+                var browserJ = mapping[j][2]
                 // mapping.debug && console.log(mapping[i][0], mapping[j][0], browserI, browserJ)
-                if (!((browserI & browser) != 0 && (browserJ & browser) != 0 && (browserI ^ browserJ) == 0))
+                if (!((browserI & browser) != 0 && 
+                      (browserJ & browser) != 0 && 
+                      (browserI ^ browserJ) == 0))
                     continue
 
                 // bakcground-position is dangerous, position设置必须在background-image之后
                 if (mapping[j][1].indexOf('background-position') != -1) {
-                    selectorHistory = selectorHistory.concat(splitedSelectors[j])
-                    continue
-                }
-
-                var hasFlag = false
-                // ".a {width:0} .a, .b{width:1}, .b{width:0}" 不应该被合并成 ".a, .b{width:0} .a, .b{width:1}"
-                // 但是目前还有一个最严重的问题：
-                // .c {width:1}, .d{width:0}, .b{width:1}, .a{width:0}
-                // class="a c" => width 0
-                // class="b d" => width 1
-                // 一旦合并成 .b,.c{width:1} .d,.a{width:0} （不论往前合并还是往后合并，都是这个结果，囧）
-                // class="a c" => width 0
-                // class="b d" => width 0(本来为1)
-                // 这是无法解决的问题，因为我不能在没有分析DOM的情况下，确定两个selector指向同一个dom
-                // 为此，安全模式 --safe 诞生。
-                for(var k = 0; k < splitedSelectors[j].length; k++) {
-                    var x = splitedSelectors[j][k];
-                    if (selectorHistory.indexOf(x) != -1) {
-                        hasFlag = true;
-                        break;
-                    }
-                }
-                if (hasFlag) {
-                    selectorHistory = selectorHistory.concat(splitedSelectors[j])
                     continue
                 }
 
@@ -5626,31 +5513,26 @@ module.exports = global.FEDCombineSameRuleSets = new Class(StyleSheetChecker, fu
 
                 // remove rule set
                 styleSheet.removeRuleSetByIndex(j)
-                selectorHistory = selectorHistory.concat(splitedSelectors[j])
+
+                delta ++;
             }
         }
         // remember to clean after remove ruleset
         styleSheet.clean()
     }
 
-    this._gen_hash = function(self, ruleSets, browser) {
+    this.rulesetMapper = function(self, ruleSets, browser) {
         var mapping = []
         var counter = 0
-        //var flag = false;
         ruleSets.forEach(function(r) {
-            if (r.extra) {// or doRuleSetDetect(r.selector) != STD:
+            if (r.extra) {
                 // make it impossible to equal
                 mapping.push(['extra', "do_not_combine_" + helper.str(counter)])
                 counter = counter + 1
                 return
             }
-            //flag = r.compressRules(browser).indexOf('width:300px;-moz-transform:1s') != -1;
-            mapping.push([r.selector, r.compressRules(browser)])
+            mapping.push([r.selector, r.compressRules(browser), r.browser])
         });
-        // if (flag) {
-        //     console.log(mapping)
-        // }
-        // mapping.debug = flag;
         return mapping
     }
 
@@ -5692,6 +5574,7 @@ module.exports = global.FEDCombineSameSelector = new Class(StyleSheetChecker, fu
         self.errorLevel = ERROR_LEVEL.WARNING
         self.errorMsg_empty = '"%s" contains the same selector in "${file}"'
         self.errorMsg = ''
+        self.order = 2
     }
 
     this.check = function(self, styleSheet, config) {
@@ -5707,6 +5590,7 @@ module.exports = global.FEDCombineSameSelector = new Class(StyleSheetChecker, fu
                 return
             }
             var fixedSelector = ruleset.fixedSelector
+            fixedSelector = fixedSelector.replace(/\s*,\s*/g, '')
             mapper[fixedSelector] = mapper[fixedSelector] || []
             mapper[fixedSelector].push({
                 counter: counter++,
@@ -5807,41 +5691,6 @@ module.exports = global.FEDMustContainAuthorInfo = new Class(StyleSheetChecker, 
 
 })
 // auto generated by concat 
-;define('ckstyle/plugins/FED4DistinguishBrowserExtra', function(require, exports, module) {
-
-var base = require('../base');
-var ERROR_LEVEL = base.ERROR_LEVEL;
-var Class = base.Class;
-var ExtraChecker = base.ExtraChecker;
-var helper = require('./helper');
-var Browser = require('../browsers/Detector').Browser
-
-module.exports = global.FEDDistinguishBrowserExtra = new Class(ExtraChecker, function () {
-    
-    this.__init__ = function (self) {
-        self.id = 'extra-for-browsers'
-        self.errorLevel = ERROR_LEVEL.ERROR
-        self.errorMsg = ''
-    }
-
-    this.check = function (self, ruleSet, config) {
-        return true
-    }
-
-    this.fix = function(self, ruleSet, config) {
-        if (!ruleSet.nested)
-            return
-        Browser.handleNestedStatement(ruleSet)
-    }
-
-    this.__doc__ = {
-        "summary":"嵌套规则区分浏览器",
-        "desc":"目的是针对不同的浏览器，生成不同的CSS规则集"
-    }
-})
-
-})
-// auto generated by concat 
 ;define('ckstyle/plugins/FED4FixNestedStatement', function(require, exports, module) {
 
 var base = require('../base')
@@ -5871,19 +5720,21 @@ module.exports = global.FEDFixNestedStatement = new Class(ExtraChecker, function
         
         var modulePath = '../doCssFix';
         var compressModulePath = '../doCssCompress'
-        
-        var statement = ruleSet.fixedStatement
 
-        var doFix = require(modulePath).doFix
-        var msg = doFix(statement, '', config)[1]
-        ruleSet.fixedStatement = msg
+        var statement = ruleSet.fixedStatement
+        
+        if (config.operation == 'fix') {
+            var doFix = require(modulePath).doFix
+            var msg = doFix(statement, '', config)[1]
+            ruleSet.fixedStatement = msg
+        }
 
         // compress it
-        var prepare = require(compressModulePath).prepare
-        var checker = prepare(statement, '', config)
-        // 嵌套的CSS，如果是压缩，也需要精简
-        var msg = checker.doCompress(config._inner.curBrowser)
-        ruleSet.compressedStatement = msg
+        if (config.operation == 'compress') {
+            var doCompress = require(compressModulePath).doCompress
+            var msg = doCompress(statement, '', config)[1]
+            ruleSet.compressedStatement = msg
+        }
     }
 
     this.__doc__ = {
@@ -6676,7 +6527,6 @@ var helper = require('./helper')
 var combiners = {
     margin: require('./MarginCombiner'),
     padding: require('./PaddingCombiner'),
-    background: require('./BackgroundCombiner'),
     outline: require('./OutlineCombiner'),
     border: require('./BorderCombiner'),
     'border-top': require('./BorderCombiner'),
@@ -6684,7 +6534,7 @@ var combiners = {
     'border-bottom': require('./BorderCombiner'),
     'border-right': require('./BorderCombiner'),
     font: require('./FontCombiner'),
-    // background: require('./BackgroundCombiner'),
+    background: require('./BackgroundCombiner'),
     'border-radius': require('./BorderRadiusCombiner'),
     'transition': require('./TransitionCombiner'),
     '-webkit-transition': require('./TransitionCombiner'),
@@ -7910,7 +7760,6 @@ var validCSSAttrs = ('@keyframes animation animation-name animation-duration ani
 exports.FED1CanNotSetFontFamily = require('./FED1CanNotSetFontFamily'); 
 exports.FED1Css3PropPrefix = require('./FED1Css3PropPrefix'); 
 exports.FED1Css3PropSpaces = require('./FED1Css3PropSpaces'); 
-exports.FED1DistinguishBrowserRule = require('./FED1DistinguishBrowserRule'); 
 exports.FED1FixCommentInValue = require('./FED1FixCommentInValue'); 
 exports.FED1FixOutlineZero = require('./FED1FixOutlineZero'); 
 exports.FED1FontSizeShouldBePtOrPx = require('./FED1FontSizeShouldBePtOrPx'); 
@@ -7937,7 +7786,6 @@ exports.FED1UseValidValues = require('./FED1UseValidValues');
 exports.FED1ZIndexShouldInRange = require('./FED1ZIndexShouldInRange'); 
 exports.FED2CombineInToOne = require('./FED2CombineInToOne'); 
 exports.FED2CommentLengthLessThan80 = require('./FED2CommentLengthLessThan80'); 
-exports.FED2DistinguishBrowserRuleSet = require('./FED2DistinguishBrowserRuleSet'); 
 exports.FED2DoNotSetStyleForSimpleSelector = require('./FED2DoNotSetStyleForSimpleSelector'); 
 exports.FED2DoNotSetStyleForTagOnly = require('./FED2DoNotSetStyleForTagOnly'); 
 exports.FED2HighPerformanceSelector = require('./FED2HighPerformanceSelector'); 
@@ -7958,7 +7806,6 @@ exports.FED2UseLowerCaseSelector = require('./FED2UseLowerCaseSelector');
 exports.FED3CombineSameRuleSets = require('./FED3CombineSameRuleSets'); 
 exports.FED3CombineSameSelector = require('./FED3CombineSameSelector'); 
 exports.FED3MustContainAuthorInfo = require('./FED3MustContainAuthorInfo'); 
-exports.FED4DistinguishBrowserExtra = require('./FED4DistinguishBrowserExtra'); 
 exports.FED4FixNestedStatement = require('./FED4FixNestedStatement'); 
 exports.FED4HackRuleSetInCorrectWay = require('./FED4HackRuleSetInCorrectWay');
 
