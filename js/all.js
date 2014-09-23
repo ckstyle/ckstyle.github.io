@@ -20061,6 +20061,30 @@ function cssmin(css, linebreakpos) {
     return css;
 
 };
+window.process = {
+    cwd: function() {}
+}
+
+define('fs', {})
+define('path', {})
+define('http', {})
+define('https', {})
+define('url', {})
+
+define('clean-css/go', function(require, exports) {
+    var CleanCSS = require('./lib/clean')
+
+    exports.compress = function(code) {
+    	return new CleanCSS({
+    		compatibility: 'ie7'
+    	}).minify(code)
+    }
+});
+
+seajs.use('clean-css/go', function(A) {
+    window.CleanCSS = A
+});
+
 // extend jquery
 $.errorMsg = function(msg, title) {
 	var con = $('#error-msg-container');
@@ -20226,7 +20250,18 @@ $(function() {
 					    <h4>by YUICompressor <span style="font-size:14px;">[节省字符: {{after2}}/{{before2}}=<span class="CK">{{rate2}}</span>%]</span></h4>\
 					    <textarea>{{yuimin}}</textarea>\
 					    <hr style="margin:10px 0;">\
-					    <div id="highchart-container" style="width: 600px; height: 300px; margin: 0 auto;box-shadow: 1px 1px 2px #ccc;"></div>'
+					    <div id="highchart-container-YUICompressor" style="width: 600px; height: 300px; margin: 0 auto;box-shadow: 1px 1px 2px #ccc;"></div>',
+		cleancss: '<h4>by CKStyle<span class="stumb"></span><span style="font-size:14px;">[节省字符: {{after1}}/{{before1}}=<span class="CK">{{rate1}}</span>%\
+						{{#greater}}，比clean-css多节省 <span class="CK">{{delta}}</span>%] <span class="ml10">;-)</span> {{/greater}}\
+						{{#equal}}，与clean-css<span class="ok">持平] :-o</span>{{/equal}}\
+						{{#worse}}，比clean-css<span class="muted">还低</span>] :-( ，<a href="https://github.com/wangjeaf/CSSCheckStyle/issues/new" target="_blank">报bug去</a>{{/worse}}</span>\
+						</h4>\
+						<textarea>{{compressed}}</textarea>\
+						<hr style="margin:10px 0;">\
+					    <h4>by clean-css <span style="font-size:14px;">[节省字符: {{after2}}/{{before2}}=<span class="CK">{{rate2}}</span>%]</span></h4>\
+					    <textarea>{{cleancss}}</textarea>\
+					    <hr style="margin:10px 0;">\
+					    <div id="highchart-container-cleancss" style="width: 600px; height: 300px; margin: 0 auto;box-shadow: 1px 1px 2px #ccc;"></div>'
 	};
 
 	function improve(type, before, result) {
@@ -20274,6 +20309,17 @@ $(function() {
 			result.greater = result.delta > 0;
 			result.equal = result.delta == 0;
 			result.worse = result.delta < 0;
+		} else if (type == 'cleancss') {
+			result.before1 = before.length;
+			result.before2 = before.length;
+			result.after1 = before.length - result.compressed.length;
+			result.after2 = before.length - result.cleancss.length;
+			result.rate1 = (result.after1 / result.before1 * 100).toFixed(2);
+			result.rate2 = (result.after2 / result.before2 * 100).toFixed(2);
+			result.delta = (result.rate1 - result.rate2).toFixed(2);
+			result.greater = result.delta > 0;
+			result.equal = result.delta == 0;
+			result.worse = result.delta < 0;
 		} else if (type == 'fix') {
 			result.fixed = result.fixed.replace(/\\n/g, '\n');
 		}
@@ -20292,20 +20338,20 @@ $(function() {
 		return mirror;
 	}
 
-	function highChart(result) {
+	function highChart(result, from) {
 		$(function () {
-	        $('#highchart-container').highcharts({
+	        $('#highchart-container-' + from).highcharts({
 	            chart: {
 	                type: 'column',
 	                margin: [ 50, 50, 100, 80]
 	            },
 	            title: {
-	                text: 'CKstyle和YUICompressor压缩后字符数对比'
+	                text: 'CKstyle和' + from + '压缩后字符数对比'
 	            },
 	            xAxis: {
 	                categories: [
 	                    'Raw',
-	                    'YUICompressor',
+	                    from,
 	                    'CKStyle'
 	                ],
 	                labels: {
@@ -20372,17 +20418,25 @@ $(function() {
 			return;
 		}
 		var textareas = $('.' + opType + '-result').find('textarea');
-		var mirror1 = makeMirror(textareas[0], opType == 'yui');
-
-		if (opType != 'yui') {
-			return;
+		var mirror1 = makeMirror(textareas[0], opType == 'yui' || opType == 'cleancss');
+		if (opType == 'yui') {
+			
+			var mirror2 = makeMirror(textareas[1], true);
+			// you scroll, i scroll
+			mirror1.on('scroll', function(e) {
+				mirror2.scrollTo(e.getScrollInfo().left, 0);
+			})
+			highChart(result, 'YUICompressor');
 		}
-		var mirror2 = makeMirror(textareas[1], true);
-		// you scroll, i scroll
-		mirror1.on('scroll', function(e) {
-			mirror2.scrollTo(e.getScrollInfo().left, 0);
-		})
-		highChart(result);
+
+		if (opType == 'cleancss') {
+			var mirror3 = makeMirror(textareas[1], true);
+			// you scroll, i scroll
+			mirror1.on('scroll', function(e) {
+				mirror3.scrollTo(e.getScrollInfo().left, 0);
+			})
+			highChart(result, 'cleancss');
+		}
 	}
 
 	function trim(str) {
@@ -20416,8 +20470,8 @@ $(function() {
 		})
 		include = collector.join(',') || 'none'
 
-		var top = $('.result-container').position().top;
-		$("html, body").animate({scrollTop: top + 10}, 500);
+		var top = $('.btns-container').position().top;
+		$("html, body").animate({scrollTop: top - 5}, 500);
 
 		seajs.use(['ckstyle/handle', 
 			'ckstyle/browsers/Analyser',
@@ -20438,7 +20492,8 @@ $(function() {
 				css: code,
 				checkresult: opType == 'check' ? handler.check(code, defaultConfig) : '',
 				yuimin: opType == 'yui' ? cssmin(code) : '',
-				compressed: (opType == 'compress' || opType == 'yui' ? handler.compress(code, defaultConfig, browser) : ''),
+				cleancss: opType == 'cleancss' ? CleanCSS.compress(code) : '',
+				compressed: (opType == 'compress' || opType == 'yui' || opType == 'cleancss' ? handler.compress(code, defaultConfig, browser) : ''),
 				fixed: opType == 'fix' ? handler.fix(code, defaultConfig, browser) : ''
 			}, opType);
 		})

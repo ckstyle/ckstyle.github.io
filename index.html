@@ -56,11 +56,12 @@
 }
 </textarea>
 					</div>
-					<div>
-						<input type="button" data-type="check" class="btn btn-info btn-large" value="Check" style="width:140px;"/>
-						<input type="button" data-type="fix" class="btn btn-info btn-large" value="Fix" style="width:140px;"/>
-						<input type="button" data-type="compress" class="btn btn-info btn-large" value="Compress" style="width:140px;"/>
+					<div class="btns-container">
+						<input type="button" data-type="check" class="btn btn-info btn-large" value="Check"/>
+						<input type="button" data-type="fix" class="btn btn-info btn-large" value="Fix"/>
+						<input type="button" data-type="compress" class="btn btn-info btn-large" value="Compress"/>
 						<input type="button" data-type="yui" class="btn btn-info btn-large" value="vs YUICompressor"/>
+						<input type="button" data-type="cleancss" class="btn btn-info btn-large" value="vs clean-css"/>
 						<a href="javascript:;" class="btn btn-link btn-large fr options-trigger">规则<i class="icon-chevron-down ml5"></i></a>
 						<a href="javascript:;" class="btn btn-link btn-large fr browsers-trigger" data-original-title="只在修复和压缩时生效，另外，请确保规则中与 '分浏览器' 相关规则被选中~" data-container="body">分浏览器<i class="icon-chevron-down ml5"></i></a>
 						<a href="javascript:;" class="btn btn-link btn-large fr tools-trigger">工具箱<i class="icon-chevron-down ml5"></i></a>
@@ -130,6 +131,12 @@
 				</div>
 				<div class="result yui-result hide">
 					<h3 class="title">CKstyle vs YUICompressor
+						<button type="button" class="close">×</button>
+					</h3>
+					<div class="content"></div>
+				</div>
+				<div class="result cleancss-result hide">
+					<h3 class="title">CKstyle vs clean-css
 						<button type="button" class="close">×</button>
 					</h3>
 					<div class="content"></div>
@@ -335,7 +342,11 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 		</div>
 		
 		<span id="wb_follow_btn" style="position:fixed;_position:absolute;bottom:50px;right:90px;"></span>
-<!-- 
+
+<!--
+		<script src="js/lib/sea.js"></script>
+		<script src="js/dist/ckstyle.js"></script>
+		<script src="js/dist/cleancss.js"></script>
 		<script src="js/lib/json2.js"></script>
 		<script src="js/lib/modernizr-2.0.6.js"></script>
 		<script src="js/lib/jquery.js"></script>
@@ -346,9 +357,11 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 		<script src="js/lib/mustache.js"></script>
 		<script src="js/lib/cssmin.js"></script>
 		<script src="js/main.js"></script>
- -->
+-->
+
 		<script src="js/lib/sea.js"></script>
 		<script src="js/dist/ckstyle.js"></script>
+		<script src="js/dist/cleancss.js"></script>
 		<script src="js/all.min.js"></script> 
 
 		<script>
