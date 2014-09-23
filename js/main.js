@@ -418,7 +418,7 @@ $(function() {
 			var me = result.compressed
 			var he = result.yuimin || result.cleancss
 			setTimeout(function() {
-                diffUsingJS(service.doFormat(me), service.doFormat(he), 'Before(Simply Formatted)')
+                diffUsingJS(service.doFormat(me), service.doFormat(he), result.yuimin ? 'YUICompressor' : 'clean-css', 'CKStyle compress')
 			}, 16);
 		})
 
