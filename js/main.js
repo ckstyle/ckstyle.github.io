@@ -751,7 +751,6 @@ $(function() {
 			me.parent().next().slideDown()
 		}
 	})
-	
 });
 
 $(function() {
@@ -759,8 +758,7 @@ $(function() {
 		'CKStyle[1] —— CSS的解析、检查、美化、修复、压缩，本该一脉相承，不应相互独立。',
 		'CKStyle[2] —— 沿着CSS的解析、检查、美化、修复、压缩之路前行，极致优化，让你的CSS更漂亮！',
 		'CKStyle[3] —— 一款同时运行在 Nodejs 和 浏览器环境 的CSS解析、检查、美化、压缩工具。',
-		'CKStyle[4] —— CSS的代码风格问题，只见规范，不见工具，CKStyle就是为了弥补这一缺失。',
-		'CKStyle[5] —— 一个严格按照规范检查 CSS 代码风格问题的工具是必要的。'
+		'CKStyle[4] —— CSS的代码风格问题，只见规范，不见工具，CKStyle就是为了弥补这一缺失。'
 	];
 	$('.slogan').html(slogans[Math.floor(Math.random() * slogans.length)]).addClass('shown')
 })
