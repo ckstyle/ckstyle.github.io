@@ -264,52 +264,42 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 		</div>
 		<div id="features" class="wrapper hide clearfix">
 			<div class="result">
-				<h3 class="title relax"><span class="feature">清晰</span> — 自制解析器，酝酿出清晰的语法树 <span class="arrow"></span></h3>
+				<h3 class="title relax"><span class="feature">更高的压缩率</span> <span class="arrow"></span></h3>
 				<div class="content hide clearfix">
-					<p>任何一段CSS，经过 <a href="https://github.com/wangjeaf/ckstyle-node/blob/master/ckstyle/parser/index.js" target="_blank">CKStyle-parser</a> 的解析，都能变成 <code> StyleSheet --> RuleSet --> Rule</code> 的结构。</p>
-					<p>每一个实体中，都包含一眼就能看懂的属性或方法，例如Rule包含 <code>name、value、fixedName、fixedValue、roughName、roughValue</code> 等属性，<code>fix/compress</code> 等方法</p>
-					<p>这些实体，就是生产最终结果需要的 <code>原材料</code>。</p>
+					<p>目前，CKStyle的压缩率已经远远超过了YUICompressor</p>
+					<p>目前，CKStyle基本与clean-css压缩效果持平，甚至局部超越。</p>
+					<p>请通过在线编辑器进行测试，如果有不符合以上期望的结果，请在 <a href="https://github.com/wangjeaf/ckstyle-node/issues/new" target="_blank">这里</a> 提bug，多谢。</p>
 				</div>
 			</div>
 			<div class="result">
-				<h3 class="title relax"><span class="feature">传承</span> — 解析/检查/美化/修复/压缩，一脉相承的CSS工具体系，互相配合递进<span class="arrow"></span></h3>
+				<h3 class="title relax"><span class="feature">更完备的功能</span><span class="arrow"></span></h3>
 				<div class="content hide clearfix">
 					<p>前端，不需要同时使用多个CSS解析器，不需要安装各自独立的检查、美化、修复、压缩工具。</p>
-					<p>有了CSS的语法树，把CSS吊起来，一探究竟，任何想做的事情，都能在光天化日之下，轻松完成，一点都不玄乎。</p>
+					<p>CKStyle，一个工具，即可包揽所有事情。</p>
 					<ul>
-						<li>检查：保留了所有原始取值的 <code>roughName/roughValue</code> 等属性，让一切CSS代码问题暴露在阳光下。</li>
-						<li>美化：把解析出的语法树，按顺序和格式输出即可。</li>
-						<li>修复：针对 <code>name</code> 和 <code>value</code>，先Rule、后RuleSet、最后StyleSheet，层层优化。最后按顺序和格式输出即可。</li>
-						<li>压缩：修复以后的代码，<code>去掉格式，就是压缩</code>。</li>
-						<li>分浏览器压缩：RuleSet和Rule，加上 <code>基于二进制位计算的浏览器兼容性检测</code>，先抽取出兼容指定浏览器的规则，再压缩即可。</li>
+						<li>检查：检查代码中可能存在的风格、取值等问题。</li>
+						<li>美化：简略的格式化代码。</li>
+						<li>修复：尽可能多的修复代码问题，并最终格式化。</li>
+						<li>压缩：在修复的基础上，压缩代码。</li>
+						<li>分浏览器压缩：根据不同的浏览器，压缩出不同的CSS，再也不用为兼容不同浏览器，编辑不同CSS文件了。</li>
 					</ul>
-					<p>从解析完成之后，语法树就成了检查、美化、修复、压缩的核心，所有内容围绕语法树来完成，步步为营。</p>
 				</div>
 			</div>
 			<div class="result">
-				<h3 class="title relax"><span class="feature">分工</span> — 一插件一明确功能，各司其职，分工细致<span class="arrow"></span></h3>
+				<h3 class="title relax"><span class="feature">更强的扩展性</span><span class="arrow"></span></h3>
 				<div class="content hide clearfix">
 					<p>就像是流水线上的工人一样，每一个插件，负责一个职责，整体协作，完成一项产品。例如：</p>
 					<ul>
 						<li><a href="https://github.com/wangjeaf/ckstyle-node/blob/master/ckstyle/plugins/FED3CombineSameRuleSets.js" target="_blank">FEDCombineSameRuleSets</a>，它的 <code>check</code>用于检查是不是有值相同的RuleSet，它的 <code>fix</code> 用于自动修复此问题</li>
 						<li><a href="https://github.com/wangjeaf/ckstyle-node/blob/master/ckstyle/plugins/FED1NoUnitAfterZero.js" target="_blank">FEDNoUnitAfterZero</a>，它的 <code>check</code>用于检查0后面有没有可省略的单位，它的 <code>fix</code> 用于自动删除可省略的单位</li>
 					</ul>
-					<p>当所有 “工人” 各司其职之后，检查结果、格式化后的CSS、压缩的CSS，都是水到渠成的事情。</p>
+					<p>每一个工人，都是可以 <code>随时调换</code> 的，每一个插件，都可以 <code>热插拔</code>。</p>
 				</div>
 			</div>
 			<div class="result">
-				<h3 class="title relax"><span class="feature">完备</span> — 基于Mocha的完备的单元测试，保驾护航<span class="arrow"></span></h3>
+				<h3 class="title relax"><span class="feature">更新颖的使用方式</span><span class="arrow"></span></h3>
 				<div class="content hide clearfix">
-					<p>作为一个工具，单元测试必不可少，CKStyle基于Mocha，设计了一套适合自己特色的 <a href="https://github.com/wangjeaf/ckstyle-node/tree/master/test" target="_blank">测试用例组织方式</a>。包括：</p>
-					<ul>
-						<li>CSS版单元测试：用纯CSS，编写检查功能的单元测试。</li>
-						<li>Nodejs版单元测试：用Nodejs，编写更为复杂多变的单元测试。</li>
-					</ul>
-				</div>
-			</div>
-			<div class="result">
-				<h3 class="title relax"><span class="feature">新颖</span> — CKService，前所未有的CSS在线分析与替换工具<span class="arrow"></span></h3>
-				<div class="content hide clearfix">
+					<p>CKService，前所未有的CSS在线分析与替换工具</p>
 					<p>按照<a href="#service">简单的2个操作步骤</a>，就能一键分析任何网页的CSSS。如果你问我：</p>
 					<ul>
 						<li>你的工具压缩我的CSS，<code>有什么帮助</code>？</li>
@@ -320,7 +310,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 				</div>
 			</div>
 			<div class="result">
-				<h3 class="title relax"><span class="feature">多栖</span> — 多栖作战，可在多个运行环境中灵活使用<span class="arrow"></span></h3>
+				<h3 class="title relax"><span class="feature">更多运行环境的支持</span><span class="arrow"></span></h3>
 				<div class="content hide clearfix">
 					<ul>
 						<li>Nodejs：<code>require('ckstyle')</code></li>
@@ -330,15 +320,27 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 					<p>运行环境，不是问题，立即试用，就看<a href="#startup">这里</a></p>
 				</div>
 			</div>
-			<div class="result">
-				<h3 class="title relax"><span class="feature">开放</span> — 开放的架构设计，功能即插件，灵活扩展，欢迎共建<span class="arrow"></span></h3>
+			<div class="result hide">
+				<h3 class="title relax"><span class="feature">功能正确性</span> <span class="arrow"></span></h3>
 				<div class="content hide clearfix">
+					<p>基于Mocha的完备的单元测试，保驾护航</p>
+					<p>作为一个工具，单元测试必不可少，CKStyle基于Mocha，设计了一套适合自己特色的 <a href="https://github.com/wangjeaf/ckstyle-node/tree/master/test" target="_blank">测试用例组织方式</a>。包括：</p>
+					<ul>
+						<li>CSS版单元测试：用纯CSS，编写检查功能的单元测试。</li>
+						<li>Nodejs版单元测试：用Nodejs，编写更为复杂多变的单元测试。</li>
+					</ul>
+				</div>
+			</div>
+			<div class="result">
+				<h3 class="title relax"><span class="feature">对开发者，更开放，更自由</span><span class="arrow"></span></h3>
+				<div class="content hide clearfix">
+					<p>开放的架构设计，功能即插件，灵活扩展，欢迎共建。</p>
 					<p>CKStyle设计之初，就考虑到了工作的艰难性和长期性，任何地方，都争取设计成足够灵活可扩展的。</p>
 					<ul>
 						<li>CKStyle的<a href="https://github.com/wangjeaf/ckstyle-node/tree/master/cmds" target="_blank">子命令</a> (例如 <code>ckstyle format/fix/check/compress</code>)，可热插拔</li>
-						<li>CKStyle的<a href="https://github.com/wangjeaf/ckstyle-node/tree/master/ckstyle/plugins" target="_blank">规则</a> (例如 <code>FEDCanNotSetFontFamily</code>)，可以热插拔</li>
+						<li>CKStyle的<a href="https://github.com/wangjeaf/ckstyle-node/tree/master/ckstyle/plugins" target="_blank">规则</a> (例如 <code>FEDCanNotSetFontFamily</code>)，可热插拔</li>
 					</ul>
-					<p>开放的架构，欢迎大家一起贡献。</p>
+					<p>开放的架构，开源的代码，欢迎大家一起贡献。</p>
 				</div>
 			</div>
 		</div>
