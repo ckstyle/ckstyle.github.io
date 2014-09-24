@@ -20812,10 +20812,12 @@ $(function() {
 	});
 });
 
+var Editor;
+
 // init editor
 $(function() {
 	var jqTextarea = $('#editor'),
-		textarea = jqTextarea[0], top,
+		textarea = jqTextarea[0], top;
 	Editor = CodeMirror.fromTextArea(textarea, {
 		mode: 'css',
 	    theme: 'default',
@@ -21440,5 +21442,13 @@ $(function() {
 	$('.slogan').html(slogans[Math.floor(Math.random() * slogans.length)]).addClass('shown')
 })
 
-
+$(function() {
+	$('.editor-container').delegate('.demo-code', 'click', function() {
+		var me = $(this)
+		var url = me.data('file')
+		$.get(url, function(code) {
+			Editor.setValue(code);
+		})
+	})
+})
 
