@@ -21412,4 +21412,18 @@ $(function() {
 			handleHash(window.location.hash);
 		}
 	}
+
+	$('#features').delegate('.arrow', 'click', function() {
+		var me = $(this);
+		if (me.hasClass('expanded')) {
+			me.removeClass('expanded')
+			me.parent().next().slideUp()
+		} else {
+			me.addClass('expanded')
+			me.parent().next().slideDown()
+		}
+	})
 });
+
+
+

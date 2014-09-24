@@ -175,8 +175,8 @@ body {
     color: #888;
     border-bottom: 3px solid transparent;
     text-decoration: none;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
     letter-spacing: 1px;
     -webkit-transition: all .3s;
 }
@@ -442,3 +442,32 @@ ol li, ul li {
 .diff-close:hover {
     color: #999;
 }
+
+.arrow {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-left: 2px solid #DDD;
+    border-top: 2px solid #DDD;
+    -webkit-transform: rotateZ(225deg);
+    transform: rotateZ(225deg);
+    -webkit-transition: all .4s;
+    transition: all .4s;
+    float: right;
+    cursor: pointer;
+    margin-top: 6px;
+    margin-right: 10px;
+}
+.arrow:hover {
+    border-color: #CCC;
+}
+.arrow.expanded {
+    margin-top: 13px;
+    -webkit-transform: rotateZ(45deg);
+    transform: rotateZ(45deg);
+}
+
+.feature {
+    color: #DF482B;
+}
+
