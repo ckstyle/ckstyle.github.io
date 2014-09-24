@@ -21443,10 +21443,16 @@ $(function() {
 })
 
 $(function() {
+	var cache = {};
 	$('.editor-container').delegate('.demo-code', 'click', function() {
 		var me = $(this)
 		var url = me.data('file')
+		if (cache[url]) {
+			Editor.setValue(cache[url]);
+			return;
+		}
 		$.get(url, function(code) {
+			cache[url] = code;
 			Editor.setValue(code);
 		})
 	})
