@@ -367,7 +367,11 @@ $(function() {
 
 	function diffUsingJS(base, newtxt, beforeText, afterText) {
 		$('.diff-con').remove();
-		$(templates.differ).hide().appendTo('body').show('slow');
+		var differ = $(templates.differ).hide();
+		differ.find('.diff-viewer').css({
+			'max-height': $(window).height() - 80
+		})
+		differ.appendTo('body').show('slow');
 		$('.diff-con').delegate('.diff-close', 'click', function() {
 			$('.diff-con').hide('slow', function() {
 				$(this).remove();
@@ -418,7 +422,7 @@ $(function() {
 			var me = result.compressed
 			var he = result.yuimin || result.cleancss
 			setTimeout(function() {
-                diffUsingJS(service.doFormat(me), service.doFormat(he), result.yuimin ? 'YUICompressor' : 'clean-css', 'CKStyle compress')
+                diffUsingJS(service.doFormat(me), service.doFormat(he), 'CKStyle compress', result.yuimin ? 'YUICompressor' : 'clean-css')
 			}, 16);
 		})
 
