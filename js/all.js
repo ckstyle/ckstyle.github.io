@@ -21433,6 +21433,18 @@ $(function() {
 			me.parent().next().slideDown()
 		}
 	})
+
+	$('#features').delegate('.result', 'click', function() {
+		var me = $(this);
+		var arrow = me.find('.feature-arrow')
+		if (arrow.hasClass('expanded')) {
+			arrow.removeClass('expanded')
+			arrow.parent().next().slideUp()
+		} else {
+			arrow.addClass('expanded')
+			arrow.parent().next().slideDown()
+		}
+	})
 });
 
 $(function() {
