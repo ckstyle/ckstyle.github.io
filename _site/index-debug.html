@@ -2,7 +2,7 @@
 <html xmlns:wb="http://open.weibo.com/wb">
 	<head>
 		<meta charset="utf-8"/>
-		<title>CKStyle-CSS的检查、修复与压缩工具！</title>
+		<title>CKStyle——CSS的检查、修复与压缩工具！</title>
 		<meta name="description" content="一个CSS的解析、检查、修复与压缩的工具集" />
         <meta name="keywords" content="CSS,解析,检查,修复,压缩,分浏览器压缩,cssmin,CSSCheckStyle,CKStyle,FixStyle,CssCompress,CKService,CKGrade" />
 		<link rel="stylesheet" href="tools/bootstrap3/css/bootstrap.min.css"/>
@@ -13,24 +13,24 @@
 	</head>
 	<body>
 		<div class="header-con">
-			<div class="header clearfix">
+			<div class="header clearfix mb20">
 				<div class="logo fl">
 					<a href="/">
 						<!-- <span class="CK">CK</span><span class="style">Style</span> -->
-						<img src="img/logo-s.png" width="150"/>
+						<img src="img/logo-s.png" width="120"/>
 					</a>
 				</div>
 				<!-- <div class="fl ver">4Nodejs</div> -->
 				<!-- <a href="https://github.com/wangjeaf/ckstyle-node" target="_blank" id="forkme-img-container"></a> -->
 				<ul class="list-unstyled menu fr mb0 fs16">
-					<li><a href="#index" class="current">首页</a></li>
-					<li><a href="#features">亮点</a></li>
-					<li><a href="#startup">试用</a></li>
+					<li><a href="#index" class="current">Home</a></li>
+					<li><a href="#features">Features</a></li>
+					<li><a href="#startup">Startup</a></li>
 					<li><a href="#service">CKService</a></li>
-					<li><a href="#document">文档</a></li>
-					<li><a href="#about">关于</a></li>
+					<li><a href="#document">Docs</a></li>
+					<li><a href="#about">About</a></li>
 					<li><a href="https://github.com/wangjeaf/ckstyle-node">Github</a></li>
-					<li><a href="https://github.com/wangjeaf/ckstyle-node/issues/new" style="color: #DF482B" target="_blank">报Bug?</a></li>
+					<li><a href="https://github.com/wangjeaf/ckstyle-node/issues/new" style="color: #DF482B" target="_blank">FindBug?</a></li>
 				</ul>
 			</div>
 		</div>
@@ -46,7 +46,7 @@
 								<li class="demo-code" data-file="./css/demo.css">mydemo.css</li>
 								<li class="demo-code" data-file="./css/animate.css">animate.css</li>
 								<li class="demo-code" data-file="./css/normalize.css">normalize.css</li>
-								<li class="demo-code" data-file="./tools/bootstrap/css/bootstrap.css">bootstrap.css</li>
+								<li class="demo-code" data-file="./tools/bootstrap/css/bootstrap.css">Bootstrap</li>
 							</ul>
 						</div>
 						<textarea id="editor" name="csscode" placeholder="/* 请先在此编辑您的 CSS */">/**
@@ -68,11 +68,11 @@ border: 1px solid #FFFFFF;
 					</div>
 					<div class="btns-container">
 						<input type="button" data-type="check" class="btn btn-warning" value="Check"/>
-						<input type="button" data-type="format" class="btn btn-default" value="Format"/>
-						<input type="button" data-type="fix" class="btn btn-default" value="Fix"/>
+						<input type="button" data-type="format" class="btn btn-info" value="Format"/>
+						<input type="button" data-type="fix" class="btn btn-primary" value="Fix"/>
 						<input type="button" data-type="compress" class="btn btn-success" value="Compress"/>
-						<input type="button" data-type="yui" class="btn btn-default" value="vs YUICompressor"/>
-						<input type="button" data-type="cleancss" class="btn btn-default" value="vs clean-css"/>
+						<input type="button" data-type="yui" class="btn btn-success" value="vs YUICompressor"/>
+						<input type="button" data-type="cleancss" class="btn btn-success" value="vs clean-css"/>
 						<a href="javascript:;" class="btn btn-link btn-large fr options-trigger">规则<i class="glyphicon glyphicon-chevron-down ml5 fs12"></i></a>
 						<a href="javascript:;" class="btn btn-link btn-large fr browsers-trigger" data-original-title="只在修复和压缩时生效，另外，请确保规则中与 '分浏览器' 相关规则被选中~" data-container="body">分浏览器<i class="glyphicon glyphicon-chevron-down ml5 fs12"></i></a>
 						<a href="javascript:;" class="btn btn-link btn-large fr tools-trigger">工具箱<i class="glyphicon glyphicon-chevron-down ml5 fs12"></i></a>
@@ -229,7 +229,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 				<div class="content clearfix">
 					<div class="mt10"> <code>ckstyle serve</code> ，在 <code>4567</code> 端口启动了ck服务，开始玩转 <a href="#service">CKService</a>  吧~ </div>
 					<hr>
-					<div class="fr"><a href="https://github.com/wangjeaf/ckstyle-node" target="_blank" class="btn btn-success p10"><i class="glyphicon glyphicon-headphones mr5"></i>更多使用，请上github瞅瞅吧~</a></div>
+					<div class="fr"><a href="https://github.com/wangjeaf/ckstyle-node" target="_blank" class="btn btn-success p10"><i class="glyphicon glyphicon-headphones mt5 mr5"></i>更多使用，请上github瞅瞅吧~</a></div>
 				</div>
 			</div>
 		</div>
@@ -321,7 +321,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 				<h3 class="title relax"><span class="feature">更新颖的使用方式</span><span class="feature-arrow"></span></h3>
 				<div class="content hide clearfix">
 					<p>CKService，前所未有的CSS在线分析与替换工具</p>
-					<p>按照<a href="#service">简单的2个操作步骤</a>，就能一键分析任何网页的CSS。如果你问我：</p>
+					<p>按照<a href="#service">简单的2个操作步骤</a>，就能一键分析任何网页的CSSS。如果你问我：</p>
 					<ul>
 						<li>你的工具压缩我的CSS，<code>有什么帮助</code>？</li>
 						<li>你压缩完我的CSS以后，<code>会不会有影响现有功能</code>？</li>
@@ -411,12 +411,32 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 				<li>2012-12-07 CKStyle发布 <a href="https://github.com/wangjeaf/CSSCheckStyle">Python版本</a></li>
 			</ul>
 		</div>
+		<!-- <div id="bug" class="wrapper hide">
+			<div class="result">
+				<h3 class="title relax">感谢您为CKstyle报bug</h3>
+				<div class="content clearfix">
+					<p class="mt20">在使用CKstyle或者使用<strong>本官网</strong>时出现的任何问题，都可以在github上提出来。</p>
+					<p class="mt20">为了更好的了解CKstyle在您使用过程中遇到的问题，请您：</p>
+					<ol class="large">
+						<li>描述您电脑上的 <strong>Nodejs</strong> 版本</li>
+						<li>给出您测试时使用的<strong> CSS 源代码</strong></li>
+						<li>给出您<strong>期望</strong>的 CKstyle 处理结果</li>
+						<li>给出您觉得<strong>有问题</strong>的 CKstyle 处理后的结果</li>
+						<li>其他您想说的~~~</li>
+					</ol>
+					<div class="mt20">我们会 <strong>尽快</strong> 解决之</div>
+					<div class="mt20">多谢  ;-)</div>
+					<hr>
+					<div class="fr"><a href="https://github.com/wangjeaf/ckstyle-node/issues/new" target="_blank" class="btn btn-danger p10"><i class="icon-screenshot icon-white mt5 mr5"></i>欢天喜地上 github 报 bug 去咯~~~</a></div>
+				</div>
+			</div>
+		</div> -->
 		<div class="footer clearfix">
 			<p class="fr mb0"> CKStyle © 2014 <a href="https://github.com/wangjeaf">wangjeaf</a>. <span>
-			<span style="visibility:hidden;"><script type="text/javascript">
+			<script type="text/javascript">
 			var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
 			document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F1c660fbe3d82e111e912141a5502ad64' type='text/javascript'%3E%3C/script%3E"));
-			</script></span>
+			</script>
 
 			</span></p>
 			<div class="jiathis_style fl">
@@ -427,9 +447,9 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 			</div>
 		</div>
 		
-		<!-- <span id="wb_follow_btn" style="position:fixed;_position:absolute;bottom:50px;right:90px;"></span> -->
+		<span id="wb_follow_btn" style="position:fixed;_position:absolute;bottom:50px;right:90px;"></span>
 
-<!--
+		<!--
 		<script src="js/lib/sea.js"></script>
 		<script src="js/dist/ckstyle.js"></script>
 		<script src="js/dist/cleancss.js"></script>
