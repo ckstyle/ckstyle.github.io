@@ -762,7 +762,7 @@ $(function() {
 		}
 	})
 
-	$('#features').delegate('.result', 'click', function() {
+	$('#features').delegate('.result .title', 'click', function() {
 		var me = $(this);
 		var arrow = me.find('.feature-arrow')
 		if (arrow.hasClass('expanded')) {
