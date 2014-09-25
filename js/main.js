@@ -760,6 +760,7 @@ $(function() {
 });
 
 $(function() {
+	/*
 	var slogans = [
 		'CKStyle[1] —— CSS的解析、检查、美化、修复、压缩，本该一脉相承，不应相互独立。',
 		'CKStyle[2] —— 沿着CSS的解析、检查、美化、修复、压缩之路前行，极致优化，让你的CSS更漂亮！',
@@ -768,6 +769,9 @@ $(function() {
 		'CKStyle[5] —— 不像Uglifyjs那样彻底的吃透JS，CSS压缩工具怎么能做到那么极致的压缩？'
 	];
 	$('.slogan').html(slogans[Math.floor(Math.random() * slogans.length)]).addClass('shown')
+	*/
+	var slogan = 'CKStyle —— 一脉相承的CSS检查、美化、修复、压缩工具。';
+	$('.slogan').html(slogan).addClass('shown')
 })
 
 $(function() {
