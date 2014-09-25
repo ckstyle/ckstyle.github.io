@@ -774,7 +774,7 @@ $(function() {
 	];
 	$('.slogan').html(slogans[Math.floor(Math.random() * slogans.length)]).addClass('shown')
 	*/
-	var slogan = 'CKStyle —— 一脉相承的CSS检查、美化、修复、压缩工具。';
+	var slogan = 'CKStyle — 一脉相承的CSS检查、美化、修复、压缩工具。';
 	$('.slogan').html(slogan).addClass('shown')
 })
 
