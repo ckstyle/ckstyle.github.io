@@ -485,7 +485,7 @@ $(function() {
 		include = collector.join(',') || 'none'
 
 		var top = $('.btns-container').position().top;
-		$("html, body").animate({scrollTop: top - 5}, 500);
+		$("html, body").animate({scrollTop: top - 5 - 80}, 500);
 
 		seajs.use(['ckstyle/handle', 
 			'ckstyle/browsers/Analyser',
@@ -578,24 +578,24 @@ $(function() {
 
 	$('.options-trigger').click(function() {
 		optionsContainer.toggle();
-		$(this).find('i').toggleClass('icon-chevron-down').toggleClass('icon-chevron-up');
+		$(this).find('i').toggleClass('glyphicon-chevron-down').toggleClass('glyphicon-chevron-up');
 	});
 
 	$('.tools-trigger').click(function() {
 		toolsContainer.toggle();
-		$(this).find('i').toggleClass('icon-chevron-down').toggleClass('icon-chevron-up');
+		$(this).find('i').toggleClass('glyphicon-chevron-down').toggleClass('glyphicon-chevron-up');
 	});
 
 	$('.browsers-trigger').click(function() {
 		browsersContainer.toggle();
-		$(this).find('i').toggleClass('icon-chevron-down').toggleClass('icon-chevron-up');
+		$(this).find('i').toggleClass('glyphicon-chevron-down').toggleClass('glyphicon-chevron-up');
 	});
 
 	browsersContainer.find('button').click(function() {
 		var jqThis = $(this);
 		browsersContainer.find('i').hide();
 		if (jqThis.find('i').length == 0) {
-			$('<i class="icon-ok icon-white"></i>').appendTo(jqThis);
+			$('<i class="glyphicon glyphicon-ok"></i>').appendTo(jqThis);
 		}
 		jqThis.find('i').show();
 		browserHidden.val(jqThis.data('value'));
@@ -751,7 +751,7 @@ $(function() {
 		}
 	}
 
-	$('#features').delegate('.arrow', 'click', function() {
+	$('#features').delegate('.feature-arrow', 'click', function() {
 		var me = $(this);
 		if (me.hasClass('expanded')) {
 			me.removeClass('expanded')

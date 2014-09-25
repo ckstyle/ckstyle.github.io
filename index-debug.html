@@ -5,31 +5,34 @@
 		<title>CKStyle——CSS的检查、修复与压缩工具！</title>
 		<meta name="description" content="一个CSS的解析、检查、修复与压缩的工具集" />
         <meta name="keywords" content="CSS,解析,检查,修复,压缩,分浏览器压缩,cssmin,CSSCheckStyle,CKStyle,FixStyle,CssCompress,CKService,CKGrade" />
-		<link rel="stylesheet" href="tools/bootstrap/css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="tools/bootstrap3/css/bootstrap.min.css"/>
 		<link rel="stylesheet" type="text/css" href="tools/codemirror/lib/codemirror.css"/>
 		<link rel="stylesheet" href="css/layout.css"/>
 		<link rel="stylesheet" href="tools/difflib/diffview.css"/>
 		<link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
 	</head>
 	<body>
-		<div class="header clearfix mt20 mb20">
-			<div class="logo fl">
-				<a href="/">
-					<!-- <span class="CK">CK</span><span class="style">Style</span> -->
-					<img src="img/logo-s.png" width="350"/>
-				</a>
+		<div class="header-con">
+			<div class="header clearfix mb20">
+				<div class="logo fl">
+					<a href="/">
+						<!-- <span class="CK">CK</span><span class="style">Style</span> -->
+						<img src="img/logo-s.png" width="120"/>
+					</a>
+				</div>
+				<!-- <div class="fl ver">4Nodejs</div> -->
+				<!-- <a href="https://github.com/wangjeaf/ckstyle-node" target="_blank" id="forkme-img-container"></a> -->
+				<ul class="list-unstyled menu fr mb0 fs16">
+					<li><a href="#index" class="current">Home</a></li>
+					<li><a href="#features">Features</a></li>
+					<li><a href="#startup">Startup</a></li>
+					<li><a href="#service">CKService</a></li>
+					<li><a href="#document">Docs</a></li>
+					<li><a href="#about">About</a></li>
+					<li><a href="https://github.com/wangjeaf/ckstyle-node">Github</a></li>
+					<li><a href="https://github.com/wangjeaf/ckstyle-node/issues/new" style="color: #DF482B" target="_blank">FindBug?</a></li>
+				</ul>
 			</div>
-			<!-- <div class="fl ver">4Nodejs</div> -->
-			<a href="https://github.com/wangjeaf/ckstyle-node" target="_blank" id="forkme-img-container"></a>
-			<ul class="unstyled menu fr mt30 fs16">
-				<li><a href="#index" class="current">Home</a></li>
-				<li><a href="#features">Features</a></li>
-				<li><a href="#startup">Startup</a></li>
-				<li><a href="#service">CKService</a></li>
-				<li><a href="#document">Docs</a></li>
-				<li><a href="#about">About</a></li>
-				<li><a href="https://github.com/wangjeaf/ckstyle-node/issues/new" style="color: #DF482B" target="_blank">FindBug?</a></li>
-			</ul>
 		</div>
 		<div id="index" class="wrapper">
 			<div class="result">
@@ -52,67 +55,70 @@
  */
 .test1 {
     *display: none;
-    border: 1px solid #FFFFFF;
-    _display: inline-block;
-    margin: 10px;
-    margin-top: 20px;
+border: 1px solid #FFFFFF;
+    		margin: 10px;
+    _display: inline-block; margin-top: 20px;
 }
 
 .test2 {
-    *display: none;
-    border: 1px solid #FFF;
-    _display: inline-block;
+    *display: none; border: 1px solid #FFF; _display: inline-block;
     margin: 20px 10px 10px;
 }
 </textarea>
 					</div>
 					<div class="btns-container">
-						<input type="button" data-type="check" class="btn btn-info btn-large" value="Check"/>
-						<input type="button" data-type="format" class="btn btn-info btn-large" value="Format"/>
-						<input type="button" data-type="fix" class="btn btn-info btn-large" value="Fix"/>
-						<input type="button" data-type="compress" class="btn btn-info btn-large" value="Compress"/>
-						<input type="button" data-type="yui" class="btn btn-info btn-large" value="vs YUICompressor"/>
-						<input type="button" data-type="cleancss" class="btn btn-info btn-large" value="vs clean-css"/>
-						<a href="javascript:;" class="btn btn-link btn-large fr options-trigger">规则<i class="icon-chevron-down ml5"></i></a>
-						<a href="javascript:;" class="btn btn-link btn-large fr browsers-trigger" data-original-title="只在修复和压缩时生效，另外，请确保规则中与 '分浏览器' 相关规则被选中~" data-container="body">分浏览器<i class="icon-chevron-down ml5"></i></a>
-						<a href="javascript:;" class="btn btn-link btn-large fr tools-trigger">工具箱<i class="icon-chevron-down ml5"></i></a>
+						<input type="button" data-type="check" class="btn btn-warning" value="Check"/>
+						<input type="button" data-type="format" class="btn btn-info" value="Format"/>
+						<input type="button" data-type="fix" class="btn btn-primary" value="Fix"/>
+						<input type="button" data-type="compress" class="btn btn-success" value="Compress"/>
+						<input type="button" data-type="yui" class="btn btn-success" value="vs YUICompressor"/>
+						<input type="button" data-type="cleancss" class="btn btn-success" value="vs clean-css"/>
+						<a href="javascript:;" class="btn btn-link btn-large fr options-trigger">规则<i class="glyphicon glyphicon-chevron-down ml5 fs12"></i></a>
+						<a href="javascript:;" class="btn btn-link btn-large fr browsers-trigger" data-original-title="只在修复和压缩时生效，另外，请确保规则中与 '分浏览器' 相关规则被选中~" data-container="body">分浏览器<i class="glyphicon glyphicon-chevron-down ml5 fs12"></i></a>
+						<a href="javascript:;" class="btn btn-link btn-large fr tools-trigger">工具箱<i class="glyphicon glyphicon-chevron-down ml5 fs12"></i></a>
 					</div>
 				</div>
 				<div class="browsers-container tac hide pr">
 					<input type="hidden" name="browsers" class="browsers-hidden" value="" />
-					<div class="btn-group" data-toggle="buttons-radio">
-					  <button type="button" class="btn btn-success btn-large active seperator-right" data-value="">All<i class="icon-ok icon-white"></i></button>
-					  <button type="button" class="btn btn-primary btn-large seperator-left" data-value="ie6">IE6</button>
+					<div class="btn-toolbar" role="toolbar" style="text-align: center;">
+					  <div class="btn-group">
+					  	<button type="button" class="btn btn-success btn-large active" data-value="">All<i class="glyphicon glyphicon-ok"></i></button>
+					  </div>
+					  <div class="btn-group">
+					  	<button type="button" class="btn btn-primary btn-large seperator-left" data-value="ie6">IE6</button>
 					  <button type="button" class="btn btn-primary btn-large" data-value="ie7">IE7</button>
 					  <button type="button" class="btn btn-primary btn-large" data-value="ie8">IE8</button>
 					  <button type="button" class="btn btn-primary btn-large" data-value="ie9">IE9+</button>
 					  <button type="button" class="btn btn-primary btn-large seperator-right" data-value="ie">IE</button>
-					  <button type="button" class="btn btn-success btn-large seperator-left" data-value="chrome">Chrome</button>
+					  </div>
+					  <div class="btn-group">
+					  	<button type="button" class="btn btn-success btn-large seperator-left" data-value="chrome">Chrome</button>
 					  <button type="button" class="btn btn-success btn-large" data-value="safari">Safari</button>
 					  <button type="button" class="btn btn-success btn-large" data-value="firefox">Firefox</button>
 					  <button type="button" class="btn btn-success btn-large" data-value="opera">Opera</button>
 					  <button type="button" class="btn btn-success btn-large" data-value="std">STD</button>
+					  </div>
 					</div>
 				</div>
 
 				<div class="tools-container hide pr">
-					<ul class="unstyled clearfix tools">
+					<ul class="list-unstyled clearfix tools">
 						<li>
-							<label class="checkbox nopl mb0" data-content="将重置当前的规则选择，按照系统默认来选择" data-original-title="重置所有规则">
-								<a type="button"  class="btn btn-info btn-large expand reset-rules">重置规则<i class="icon-wrench icon-white ml5"></i></a>
+							<label class="checkbox nopl mb0 mt0" data-content="将重置当前的规则选择，按照系统默认来选择" data-original-title="重置所有规则">
+								<a type="button"  class="btn btn-warning reset-rules">重置规则<i class="glyphicon glyphicon-fast-backward ml5"></i></a>
 							</label>
 							
 						</li>
-						<li>
-							<label class="checkbox nopl mb0" data-content="点击即可切换模式，安全模式下，不以最大压缩率为目的，某些插件将以最安全保险保守的方式运行。</code>" data-original-title="安全模式">
+						<li class="ml10">
+							<label class="checkbox nopl mb0 mt0" data-content="点击即可切换模式，安全模式下，不以最大压缩率为目的，某些插件将以最安全保险保守的方式运行。</code>" data-original-title="安全模式">
 								<input type="hidden" id="safeModeInput" name="safeMode" value="false"/>
-								<button type="button" class="btn btn-success btn-large expand safe-mode-btn" data-toggle="button">安全模式<i class="icon-remove icon-white ml5"></i></button>
+								<button type="button" class="btn btn-success safe-mode-btn" data-toggle="button">安全模式<i class="glyphicon glyphicon-exclamation-sign ml5"></i></button>
 							</label>
 						</li>
 					</ul>
 				</div>
 				<div class="options-container hide pr">
-					<ul class="unstyled clearfix options">
+					<ul class="list-unstyled clearfix options">
 						<li id="option-tools">
 							<label class="checkbox" id="select-all-wrapper">
 								<input type="checkbox" id="select-all"/>全选
@@ -223,7 +229,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 				<div class="content clearfix">
 					<div class="mt10"> <code>ckstyle serve</code> ，在 <code>4567</code> 端口启动了ck服务，开始玩转 <a href="#service">CKService</a>  吧~ </div>
 					<hr>
-					<div class="fr"><a href="https://github.com/wangjeaf/ckstyle-node" target="_blank" class="btn btn-success p10"><i class="icon-headphones icon-white mt5 mr5"></i>更多使用，请上github瞅瞅吧~</a></div>
+					<div class="fr"><a href="https://github.com/wangjeaf/ckstyle-node" target="_blank" class="btn btn-success p10"><i class="glyphicon glyphicon-headphones mt5 mr5"></i>更多使用，请上github瞅瞅吧~</a></div>
 				</div>
 			</div>
 		</div>
@@ -261,25 +267,25 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 				<h3 class="title relax">部分网站的CKService使用结果</h3>
 				<div class="content clearfix">
 					<p class="fwb">人人网</p>
-					<div><img class="img" src="img/a.gif" data-src="img/ckservice-renren.jpg" alt="ckservice 人人"/></div>
+					<div><img class="img" src="img/a.gif" width="100%" data-src="img/ckservice-renren.jpg" alt="ckservice 人人"/></div>
 					<hr>
 					<p class="fwb">淘宝网</p>
-					<div><img class="img" src="img/a.gif" data-src="img/ckservice-taobao.jpg" alt="ckservice 淘宝"/></div>
+					<div><img class="img" src="img/a.gif" width="100%" data-src="img/ckservice-taobao.jpg" alt="ckservice 淘宝"/></div>
 					<hr>
 					<p class="fwb">一淘网</p>
-					<div><img class="img" src="img/a.gif" data-src="img/ckservice-etao.jpg" alt="ckservice 一淘"/></div>
+					<div><img class="img" src="img/a.gif" width="100%" data-src="img/ckservice-etao.jpg" alt="ckservice 一淘"/></div>
 					<hr>
 					<p class="fwb">优酷网</p>
-					<div><img class="img" src="img/a.gif" data-src="img/ckservice-youku.jpg" alt="ckservice 优酷"/></div>
+					<div><img class="img" src="img/a.gif" width="100%" data-src="img/ckservice-youku.jpg" alt="ckservice 优酷"/></div>
 					<hr>
 					<p class="fwb">百度贴吧</p>
-					<div><img class="img" src="img/a.gif" data-src="img/ckservice-tieba.jpg" alt="ckservice 百度贴吧"/></div>
+					<div><img class="img" src="img/a.gif" width="100%" data-src="img/ckservice-tieba.jpg" alt="ckservice 百度贴吧"/></div>
 				</div>
 			</div>
 		</div>
 		<div id="features" class="wrapper hide clearfix">
 			<div class="result">
-				<h3 class="title relax"><span class="feature">更高的压缩率</span> <span class="arrow"></span></h3>
+				<h3 class="title relax"><span class="feature">更高的压缩率</span> <span class="feature-arrow"></span></h3>
 				<div class="content hide clearfix">
 					<p>目前，CKStyle的压缩率已经远远超过了YUICompressor</p>
 					<p>目前，CKStyle基本与clean-css压缩效果持平，甚至局部超越。</p>
@@ -287,7 +293,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 				</div>
 			</div>
 			<div class="result">
-				<h3 class="title relax"><span class="feature">更完备的功能</span><span class="arrow"></span></h3>
+				<h3 class="title relax"><span class="feature">更完备的功能</span><span class="feature-arrow"></span></h3>
 				<div class="content hide clearfix">
 					<p>前端，不需要同时使用多个CSS解析器，不需要安装各自独立的检查、美化、修复、压缩工具。</p>
 					<p>CKStyle，一个工具，即可包揽所有事情。</p>
@@ -301,7 +307,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 				</div>
 			</div>
 			<div class="result">
-				<h3 class="title relax"><span class="feature">更强的扩展性</span><span class="arrow"></span></h3>
+				<h3 class="title relax"><span class="feature">更强的扩展性</span><span class="feature-arrow"></span></h3>
 				<div class="content hide clearfix">
 					<p>就像是流水线上的工人一样，每一个插件，负责一个职责，整体协作，完成一项产品。例如：</p>
 					<ul>
@@ -312,7 +318,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 				</div>
 			</div>
 			<div class="result">
-				<h3 class="title relax"><span class="feature">更新颖的使用方式</span><span class="arrow"></span></h3>
+				<h3 class="title relax"><span class="feature">更新颖的使用方式</span><span class="feature-arrow"></span></h3>
 				<div class="content hide clearfix">
 					<p>CKService，前所未有的CSS在线分析与替换工具</p>
 					<p>按照<a href="#service">简单的2个操作步骤</a>，就能一键分析任何网页的CSSS。如果你问我：</p>
@@ -325,7 +331,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 				</div>
 			</div>
 			<div class="result">
-				<h3 class="title relax"><span class="feature">更多运行环境的支持</span><span class="arrow"></span></h3>
+				<h3 class="title relax"><span class="feature">更多运行环境的支持</span><span class="feature-arrow"></span></h3>
 				<div class="content hide clearfix">
 					<ul>
 						<li>Nodejs：<code>require('ckstyle')</code></li>
@@ -336,7 +342,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 				</div>
 			</div>
 			<div class="result hide">
-				<h3 class="title relax"><span class="feature">功能正确性</span> <span class="arrow"></span></h3>
+				<h3 class="title relax"><span class="feature">功能正确性</span> <span class="feature-arrow"></span></h3>
 				<div class="content hide clearfix">
 					<p>基于Mocha的完备的单元测试，保驾护航</p>
 					<p>作为一个工具，单元测试必不可少，CKStyle基于Mocha，设计了一套适合自己特色的 <a href="https://github.com/wangjeaf/ckstyle-node/tree/master/test" target="_blank">测试用例组织方式</a>。包括：</p>
@@ -347,7 +353,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 				</div>
 			</div>
 			<div class="result">
-				<h3 class="title relax"><span class="feature">对开发者，更开放，更自由</span><span class="arrow"></span></h3>
+				<h3 class="title relax"><span class="feature">对开发者，更开放，更自由</span><span class="feature-arrow"></span></h3>
 				<div class="content hide clearfix">
 					<p>开放的架构设计，功能即插件，灵活扩展，欢迎共建。</p>
 					<p>CKStyle设计之初，就考虑到了工作的艰难性和长期性，任何地方，都争取设计成足够灵活可扩展的。</p>
@@ -362,7 +368,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 		<div id="document" class="wrapper hide clearfix">
 			<div class="fl">
 				<h2>使用</h2>
-				<ul class="unstyled">
+				<ul class="list-unstyled">
 					<li><a target="_blank" href="#about">简介</a></li>
 					<li><a target="_blank" href="https://github.com/wangjeaf/ckstyle-node/issues/13">安装</a></li>
 					<li><a target="_blank" href="https://github.com/wangjeaf/ckstyle-node/issues/14">使用</a></li>
@@ -372,7 +378,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 			</div>
 			<div class="fl ml20">
 				<h2>参与</h2>
-				<ul class="unstyled">
+				<ul class="list-unstyled">
 					<li><a target="_blank" href="https://github.com/wangjeaf/ckstyle-node/issues/19">插件开发</a></li>
 					<li><a target="_blank" href="https://github.com/wangjeaf/ckstyle-node/issues/17">现有插件</a></li>
 					<li><a target="_blank" href="https://github.com/wangjeaf/ckstyle-node/issues/18">单元测试</a></li>
@@ -380,9 +386,10 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 			</div>
 			<div class="fl ml20">
 				<h2>文章</h2>
-				<ul class="unstyled">
-					<li><a target="_blank" href="/docs/CSSCheckStyle%20-%20blog.pdf">CSSCheckStyle介绍</a></li>
-					<li><a target="_blank" href="/docs/CSS%20codestyle%20guideline%20from%20RENREN%20FED.pdf">CSS编码规范</a></li>
+				<ul class="list-unstyled">
+					<li><a target="_blank" href="https://github.com/wangjeaf/ckstyle-node/issues/30">漫谈CKStyle</a></li>
+					<li><a target="_blank" href="/docs/CSSCheckStyle%20-%20blog.pdf">CKStyle出生记</a></li>
+					<li><a target="_blank" href="/docs/CSS%20codestyle%20guideline%20from%20RENREN%20FED.pdf">推荐的CSS编码规范</a></li>
 				</ul>
 			</div>
 		</div>
@@ -425,10 +432,10 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 			</div>
 		</div> -->
 		<div class="footer clearfix">
-			<p class="fr"> CKStyle © 2014 <a href="https://github.com/wangjeaf">wangjeaf</a>. <span>
+			<p class="fr mb0"> CKStyle © 2014 <a href="https://github.com/wangjeaf">wangjeaf</a>. <span>
 			<script type="text/javascript">
-			// var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-			// document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F1c660fbe3d82e111e912141a5502ad64' type='text/javascript'%3E%3C/script%3E"));
+			var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+			document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F1c660fbe3d82e111e912141a5502ad64' type='text/javascript'%3E%3C/script%3E"));
 			</script>
 
 			</span></p>
@@ -442,6 +449,7 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 		
 		<span id="wb_follow_btn" style="position:fixed;_position:absolute;bottom:50px;right:90px;"></span>
 
+		<!--
 		<script src="js/lib/sea.js"></script>
 		<script src="js/dist/ckstyle.js"></script>
 		<script src="js/dist/cleancss.js"></script>
@@ -457,11 +465,17 @@ ie      : .test{_width:10px;padding:20px 0 0;*color:#FFF}
 		<script src="tools/difflib/difflib.js"></script>
 		<script src="tools/difflib/diffview.js"></script>
 		<script src="js/main.js"></script>
+-->
+
+		<script src="js/lib/sea.js"></script>
+		<script src="js/dist/ckstyle.js"></script>
+		<script src="js/dist/cleancss.js"></script>
+		<script src="js/all.min.js"></script> 
 
 		<script>
-			// $(function() {
-			// 	$('<scri' + 'pt type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1344392941912374" charset="utf-8"></scr' + 'ipt>' + '<scr' + 'ipt src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" charset="utf-8"></scr' + 'ipt>').appendTo('body');
-			// });
+			$(function() {
+				$('<scri' + 'pt type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1344392941912374" charset="utf-8"></scr' + 'ipt>' + '<scr' + 'ipt src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" charset="utf-8"></scr' + 'ipt>').appendTo('body');
+			});
 			$('<img style="position: fixed; _position:absolute; top: 0; right: 0; border: 0;" src="img/forkme.png" alt="Fork me on GitHub">').appendTo($('#forkme-img-container'));
 			$('<wb:follow-button uid="1822956823" type="red_1" width="22" height="24"></wb:follow-button>').appendTo($('#wb_follow_btn'));
 			$('#pk .toggle-trigger').click(function() {

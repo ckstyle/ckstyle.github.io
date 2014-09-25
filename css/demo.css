@@ -4,15 +4,12 @@
  */
 .test1 {
     *display: none;
-    border: 1px solid #FFFFFF;
-    margin: 10px;
-    _display: inline-block;
-    margin-top: 20px;
+border: 1px solid #FFFFFF;
+            margin: 10px;
+    _display: inline-block; margin-top: 20px;
 }
 
 .test2 {
-    *display: none;
-    border: 1px solid #FFF;
-    _display: inline-block;
+    *display: none; border: 1px solid #FFF; _display: inline-block;
     margin: 20px 10px 10px;
 }
