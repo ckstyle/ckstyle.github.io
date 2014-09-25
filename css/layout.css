@@ -14,7 +14,7 @@ body {
 .header-con {
     height: 90px;
 }
-.page-header {
+.page-top-header {
     line-height: 50px;
     border-bottom: 1px solid #DDD;
     box-shadow: 0 1px 4px #DDD;
