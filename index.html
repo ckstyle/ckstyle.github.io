@@ -5,7 +5,7 @@
 		<title>CKStyle-CSS检查、美化、修复与压缩工具！</title>
 		<meta name="description" content="一个CSS的解析、检查、修复与压缩的工具集。一套同时运行在“浏览器”和“命令行”的CSS检查、修复、压缩工具集" />
         <meta name="keywords" content="CSS,解析,美化,检查,修复,压缩,分浏览器压缩,cssmin,CSSCheckStyle,CKStyle,FixStyle,CssCompress,CKService,CKGrade" />
-        
+
 		<link rel="stylesheet" href="tools/bootstrap/css/bootstrap.min.css"/>
 		<link rel="stylesheet" type="text/css" href="tools/codemirror/lib/codemirror.css"/>
 		<link rel="stylesheet" href="css/layout.css"/>
@@ -53,22 +53,20 @@
  */
 .test1 {
     *display: none;
-    border: 1px solid #FFFFFF;
-    margin: 10px;
-    _display: inline-block;
-    margin-top: 20px;
+border: 1px solid #FFFFFF;
+    		margin: 10px;
+    _display: inline-block; margin-top: 20px;
 }
 
 .test2 {
-    *display: none;
-    border: 1px solid #FFF;
-    _display: inline-block;
+    *display: none; border: 1px solid #FFF; _display: inline-block;
     margin: 20px 10px 10px;
 }
 </textarea>
 					</div>
 					<div class="btns-container">
 						<input type="button" data-type="check" class="btn btn-info btn-large" value="Check"/>
+						<input type="button" data-type="format" class="btn btn-info btn-large" value="Format"/>
 						<input type="button" data-type="fix" class="btn btn-info btn-large" value="Fix"/>
 						<input type="button" data-type="compress" class="btn btn-info btn-large" value="Compress"/>
 						<input type="button" data-type="yui" class="btn btn-info btn-large" value="vs YUICompressor"/>
@@ -127,6 +125,12 @@
 						<button type="button" class="close">×</button>
 					</h3>
 					<div class="content">321321</div>
+				</div>
+				<div class="result format-result hide">
+					<h3 class="title">format
+						<button type="button" class="close">×</button>
+					</h3>
+					<div class="content"></div>
 				</div>
 				<div class="result fix-result hide">
 					<h3 class="title">fix

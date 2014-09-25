@@ -204,6 +204,7 @@ $(function() {
 				  {{#hasLog}}</ol>{{/hasLog}}',
 		check_noerror: '<p class="text-success mt10">CKStyle没有找到问题，赞CSS！</p>',
 		fix: '<textarea class="compressed">{{fixed}}</textarea>',
+		format: '<textarea class="compressed">{{formatted}}</textarea>',
 		compress: '<h4>compress <span style="font-size:14px;">[节省字符: {{after}}/{{before}}=<span class="CK">{{rate}}</span>%]</span></h4>\
 					  <textarea>{{compressed}}</textarea>',
 		yui: '<h4>by CKStyle<span class="stumb"></span><span style="font-size:14px;">[节省字符: {{after1}}/{{before1}}=<span class="CK">{{rate1}}</span>%\
@@ -292,6 +293,8 @@ $(function() {
 			result.worse = result.delta < 0;
 		} else if (type == 'fix') {
 			result.fixed = result.fixed.replace(/\\n/g, '\n');
+		} else if (type == 'format') {
+			result.formatted = result.formatted.replace(/\\n/g, '\n');
 		}
 		return Mustache.to_html(templates[type], result);
 	}
@@ -504,6 +507,7 @@ $(function() {
 				checkresult: opType == 'check' ? handler.check(code, defaultConfig) : '',
 				yuimin: opType == 'yui' ? cssmin(code) : '',
 				cleancss: opType == 'cleancss' ? CleanCSS.compress(code) : '',
+				formatted: opType == 'format' ? service.doFormat(code) : '',
 				compressed: (opType == 'compress' || opType == 'yui' || opType == 'cleancss' ? handler.compress(code, defaultConfig, browser) : ''),
 				fixed: opType == 'fix' ? handler.fix(code, defaultConfig, browser) : ''
 			}, opType);
