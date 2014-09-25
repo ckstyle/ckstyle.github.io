@@ -3,6 +3,7 @@ body {
     width: 100%;
     height: 100%;
     color: #686868;
+    font-family: 'helvetica neue',tahoma,'hiragino sans gb',stheiti,'wenquanyi micro hei',\5FAE\8F6F\96C5\9ED1,\5B8B\4F53,sans-serif;
     background-color: #F5F5F5;
 }
 
@@ -322,6 +323,7 @@ h3 {
 
 .CodeMirror-lines {
     line-height: 20px;
+    font-family: 'Microsoft Yahei',tahoma,serif;
 }
 
 .tip {
