@@ -189,7 +189,22 @@ padding-top: 20px }</pre>
 				<h3 class="title relax" style="font-size:16px;">第四步：试试~</h3>
 				<div class="content clearfix">
 					<div>
-					<code>ckstyle fix -p ./test.css</code> <code class="ml20"> ======> </code>
+					<code>ckstyle format test.css</code> <code class="ml20"> ======> </code>
+<pre class="mt10">
+/* 示例 */
+.test {
+    -webkit-transition: 1s;
+    -moz-transition: 1s;
+    _width: 10px;
+    *color: #ffffff;
+    padding: 0;
+    padding-top: 20px;
+}
+</pre>
+					</div>
+					<hr>
+					<div>
+					<code>ckstyle fix test.css</code> <code class="ml20"> ======> </code>
 <pre class="mt10">
 /* 示例 */
 .test {
@@ -203,14 +218,14 @@ padding-top: 20px }</pre>
 					</div>
 					<hr>
 					<div>
-					<code>ckstyle compress -p ./test.css</code> <code class="ml20">======></code>
+					<code>ckstyle compress test.css</code> <code class="ml20">======></code>
 <pre class="mt10">
 .test{_width:10px;padding:20px 0 0;*color:#FFF;-webkit-transition:1s;-moz-transition:1s}
 </pre>
 					</div>
 					<hr>
 					<div>
-					<code>ckstyle compress -p --browsers="ie6,ie7,ie,chrome,firefox,safari,opera" ./test.css</code>
+					<code>ckstyle compress --browsers="ie6,ie7,ie,chrome,firefox,safari,opera" test.css</code>
 					<code class="ml20"> ======> </code>
 <pre class="mt10">
 firefox : .test{padding:20px 0 0;-moz-transition:1s}
